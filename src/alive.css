@@ -1,0 +1,98 @@
+:root {
+    --pixel-size: 4px;
+    --grid-cell: calc(var(--pixel-size) * 16);
+    /* --grid-cell: 64px; */
+    --bg: #bc4dff;
+}
+
+
+.map {
+    image-rendering: pixelated;
+    /* background-image: url("./assets/map/map-image/mapCity.png"); */
+    background-size: 100%;
+    width: calc(60 * var(--grid-cell));
+    height: calc(60 * var(--grid-cell));
+    /* width: 140px; */
+    /* height: 140px; */
+    position: relative;
+    z-index: 2;
+    background-color: red;
+}
+
+/* .active-map {
+    z-index: 2;
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    width: 100%;
+    height: 100%;
+    transition: z-index 0.2s;
+}
+.inactive-map {
+    z-index: 1;
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s;
+} */
+
+.character {
+    width: calc(var(--grid-cell)* 2);
+    height: calc(var(--grid-cell)* 1.8);
+    position: absolute;
+    overflow: hidden;
+    z-index: 1;
+}
+
+/* .shadow {
+    width: calc(var(--grid-cell)* 1.2);
+    height: calc(var(--grid-cell)* 1.1);
+    position: absolute;
+    left: 25px;
+    top: 25px;
+    background: url("https://assets.codepen.io/21542/DemoRpgCharacterShadow.png") no-repeat no-repeat;
+    background-size: 100%;
+} */
+
+.character_spritesheet {
+    position: absolute;
+    background: url("./assets/image/gede.png") no-repeat no-repeat;
+    /* background: url('./assets/image/skeloton[2].png'); */
+    background-size: 100%;
+    width: calc(var(--grid-cell)* 8);
+    height: calc(var(--grid-cell)* 8);
+}
+
+
+.character[facing="right"] .character_spritesheet {
+    background-position-y: calc(var(--pixel-size) * -72);
+}
+
+.character[facing="up"] .character_spritesheet {
+    background-position-y: calc(var(--pixel-size) * -102);
+}
+
+.character[facing="left"] .character_spritesheet {
+    background-position-y: calc(var(--pixel-size) * -40);
+}
+
+.character[walking="true"] .character_spritesheet {
+    animation: walkAnimation 0.6s steps(4) infinite;
+}
+
+
+
+
+
+
+@keyframes walkAnimation {
+    from {
+        transform: translate3d(0%, 0%, 0);
+    }
+
+    to {
+        transform: translate3d(-100%, 0%, 0);
+    }
+}
