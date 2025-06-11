@@ -29,9 +29,24 @@ function checkPortalDestination(x, y) {
 
 	const collisionIndex = gridY * MAP_WIDTH + gridX;
 
+	if (gridY === 11 && gridX === 19) {
+		return "cblast";
+	}
+
     if (gridY === 14 && (gridX === 11 || gridX === 12)) {
         return 'kamar1';
     }
+
+		// Only check row 18 (index 17) for portals
+	if (gridY === 17 && collision[collisionIndex] === -1) {
+		if (gridX === 0) {
+			// Left portal (first column)
+			return "forest";
+		} else if (gridX === 19) {
+			// Right portal (last column)
+			return "beach";
+		}
+	}
 
 	return null;
 }

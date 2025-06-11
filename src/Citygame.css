@@ -53,7 +53,7 @@
             background-size: 100%;
         } */
 
-.character_spritesheet {
+/* .character_spritesheet {
 	position: absolute;
 	background: url("./assets/image/WhatsApp_图像2025-05-16于13.50.34_5e5ba81a-removebg-preview.png")
 		no-repeat no-repeat;
@@ -86,7 +86,7 @@
 	to {
 		transform: translate3d(-100%, 0%, 0);
 	}
-}
+} */
 
 .bullet {
 	position: absolute;

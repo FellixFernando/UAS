@@ -28,6 +28,9 @@ function checkPortalDestination(x, y) {
 	}
 
 	const collisionIndex = gridY * MAP_WIDTH + gridX;
+	if (gridY === 11 && gridX === 19) {
+		return "cblast";
+	}
 
 	// Only check row 18 (index 17) for portals
 	if (gridY === 17 && collision[collisionIndex] === -1) {
@@ -259,7 +262,7 @@ export default function Beach({ onChangeWorld, startPosition }) {
 
 
 				{/* Display collision areas and portals */}
-				{collision.map((val, idx) => {
+				{/* {collision.map((val, idx) => {
 					if (val === 0) return null;
 					const gridCell = 64;
 					const x = (idx % MAP_WIDTH) * gridCell;
@@ -281,9 +284,9 @@ export default function Beach({ onChangeWorld, startPosition }) {
 							}}
 						/>
 					);
-				})}
+				})} */}
 				{/* Grid overlay */}
-				{renderGridCells()}
+				{/* {renderGridCells()} */}
 				<div
 					ref={characterRef}
 					className="character"

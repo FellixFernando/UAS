@@ -35,7 +35,7 @@ function checkPortalDestination(x, y) {
 
 	// Baris ke-6 kolom ke-3 atau ke-4
 	if (gridY === 5 && (gridX === 2 || gridX === 3)) {
-		return "cblast";
+		return "cblast";     // ganti aja cblastnya ke game kau
 	}
 
 	return null;

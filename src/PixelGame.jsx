@@ -109,7 +109,8 @@ export default function PixelGame() {
 // // // import CityNight from "./game-screen/game-map/cityNight";
 // // import Cblast from './game-screen/mini-game/color-blast'
 // // // import Triangle from './game-screen/game-map/triangle'
-// import Alive from './game-screen/mini-game/alive'
+// // import Alive from './game-screen/mini-game/alive'
+// import Cblast from "./game-screen/mini-game/color-blast";
 // // // import Kamar1 from './game-screen/game-map/kamar1'
 // // // import Forest from './game-screen/game-map/forest';
 
@@ -117,7 +118,7 @@ export default function PixelGame() {
 //     return (
 //         <div className="frame">
 //             <div className="game-screen">
-//                 <Alive/>
+//                 <Cblast/>
 //             </div>
 //         </div>
 //     )

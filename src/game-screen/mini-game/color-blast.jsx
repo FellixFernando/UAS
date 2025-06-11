@@ -46,11 +46,7 @@ function checkPortalDestination(x, y) {
 		return null;
 	}
 
-	// Check apakah player berada di row 5 (index 4) dan column 10/11 (index 9/10)
-	if (gridY === 4 && (gridX === 9 || gridX === 10)) {
-		console.log("Teleporting to forest...");
-		return "forest";
-	}
+
 
 	// Check untuk portal lain (city)
 	const collisionIndex = gridY * MAP_WIDTH + gridX;

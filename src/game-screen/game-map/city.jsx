@@ -38,6 +38,10 @@ function checkPortalDestination(x, y) {
 		return "triangle";
 	}
 
+	if (gridY === 11 && gridX === 19) {
+		return "cblast";
+	}
+
 	// Only check row 18 (index 17) for portals
 	if (gridY === 17 && collision[collisionIndex] === -1) {
 		if (gridX === 0) {
@@ -302,6 +306,9 @@ export default function City({
 							-gameState.cameraY * pixelSize
 						}px, 0)`,
 					}}>
+
+								
+		
 					<div
 						ref={characterRef}
 						className="character"
