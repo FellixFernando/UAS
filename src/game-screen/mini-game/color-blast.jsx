@@ -3,6 +3,7 @@ import collision from '../../assets/map/map-collision/cblast';
 import beachMape from '../../assets/map/map-image/cblast.png';
 import '../../Citygame.css';
 
+
 const MAP_WIDTH = 20;
 const MAP_HEIGHT = 20;
 const PIXEL_SIZE = 4; // Assuming a pixel size of 4, adjust as needed
@@ -62,7 +63,7 @@ function checkPortalDestination(x, y) {
 
 export default function Cblast({ onChangeWorld, startPosition }) {
     const [showGameOverAlert, setShowGameOverAlert] = useState(false);
-    const [timeLeft, setTimeLeft] = useState(60); // 60 detik = 1 menit
+    const [timeLeft, setTimeLeft] = useState(10); // 60 detik = 1 menit
     const [isGameOver, setIsGameOver] = useState(false);
     const [bullets, setBullets] = useState([]);
     const [enemies, setEnemies] = useState([]); // State for enemies
@@ -173,7 +174,7 @@ export default function Cblast({ onChangeWorld, startPosition }) {
 
                 return [...prevEnemies, ...newEnemies];
             });
-        }, 2000); // 1000ms = 1 detik
+        }, 7000); // 1000ms = 1 detik
 
         return () => clearInterval(spawnInterval);
     }, [isGameOver]);
@@ -475,41 +476,50 @@ export default function Cblast({ onChangeWorld, startPosition }) {
         return `${mins}:${secs.toString().padStart(2, '0')}`;
     };
 
-    function renderGridCells() {
-        const gridCell = 64;
-        const cells = [];
-        for (let y = 0; y < 20; y++) {
-            for (let x = 0; x < 20; x++) {
-                cells.push(
-                    <div
-                        key={`grid-${x}-${y}`}
-                        style={{
-                            position: 'absolute',
-                            left: x * gridCell,
-                            top: y * gridCell,
-                            width: gridCell,
-                            height: gridCell,
-                            border: '1px solid white',
-                            boxSizing: 'border-box',
-                            pointerEvents: 'none',
-                            zIndex: 20,
-                            opacity: 0.5,
-                            fontSize: 10,
-                            color: 'yellow',
-                            display: 'flex',
-                            alignItems: 'flex-start',
-                            justifyContent: 'flex-start',
-                            padding: 2,
-                            background: 'transparent',
-                        }}
-                    >
-                        {y + 1},{x + 1}
-                    </div>
-                );
-            }
+    // function renderGridCells() {
+    //     const gridCell = 64;
+    //     const cells = [];
+    //     for (let y = 0; y < 20; y++) {
+    //         for (let x = 0; x < 20; x++) {
+    //             cells.push(
+    //                 <div
+    //                     key={`grid-${x}-${y}`}
+    //                     style={{
+    //                         position: 'absolute',
+    //                         left: x * gridCell,
+    //                         top: y * gridCell,
+    //                         width: gridCell,
+    //                         height: gridCell,
+    //                         border: '1px solid white',
+    //                         boxSizing: 'border-box',
+    //                         pointerEvents: 'none',
+    //                         zIndex: 20,
+    //                         opacity: 0.5,
+    //                         fontSize: 10,
+    //                         color: 'yellow',
+    //                         display: 'flex',
+    //                         alignItems: 'flex-start',
+    //                         justifyContent: 'flex-start',
+    //                         padding: 2,
+    //                         background: 'transparent',
+    //                     }}
+    //                 >
+    //                     {y + 1},{x + 1}
+    //                 </div>
+    //             );
+    //         }
+    //     }
+    //     return cells;
+    // }
+
+      useEffect(() => {
+        if (enemies.length === 0 && showGameOverAlert) {
+            const timer = setTimeout(() => {
+                onChangeWorld('alive');
+            }, 1000);
+            return () => clearTimeout(timer);
         }
-        return cells;
-    }
+    }, [enemies.length, showGameOverAlert, onChangeWorld]);
 
     return (
         <div className="game-screen">
@@ -551,7 +561,7 @@ export default function Cblast({ onChangeWorld, startPosition }) {
                 {/* Score: {score} */}
             </div>
 
-            {/* Game Over Alert */}
+        {/* Game Over Alert */}
             {showGameOverAlert && (
                 <div style={{
                     position: 'fixed',
@@ -597,15 +607,11 @@ export default function Cblast({ onChangeWorld, startPosition }) {
                                 🌊 You got Holy Water! ✨
                             </div>
                         )}
-                        <p style={{ fontSize: '28px', marginBottom: '30px', color: '#ffd700' }}>
-                          
-                        </p>
                         <p style={{ fontSize: '18px', marginBottom: '30px', color: '#ccc' }}>
                             {enemies.length > 0 ? `${enemies.length} enemies remaining` : 'All enemies defeated!'}
                         </p>
                         <div style={{ display: 'flex', justifyContent: 'center' }}>
                             {enemies.length > 0 ? (
-                                // Show Play Again button only when game is lost
                                 <button
                                     onClick={resetGame}
                                     style={{
@@ -632,32 +638,13 @@ export default function Cblast({ onChangeWorld, startPosition }) {
                                     Play Again
                                 </button>
                             ) : (
-                                // Show Back to Forest button only when game is won
-                                <button
-                                    onClick={() => onChangeWorld('forest')}
-                                    style={{
-                                        padding: '15px 30px',
-                                        fontSize: '20px',
-                                        backgroundColor: '#4CAF50',
-                                        border: 'none',
-                                        borderRadius: '8px',
-                                        color: 'white',
-                                        cursor: 'pointer',
-                                        fontWeight: 'bold',
-                                        transition: 'all 0.3s ease',
-                                        boxShadow: '0 4px 8px rgba(0,0,0,0.3)'
-                                    }}
-                                    onMouseOver={(e) => {
-                                        e.target.style.backgroundColor = '#45a049';
-                                        e.target.style.transform = 'scale(1.05)';
-                                    }}
-                                    onMouseOut={(e) => {
-                                        e.target.style.backgroundColor = '#4CAF50';
-                                        e.target.style.transform = 'scale(1)';
-                                    }}
-                                >
-                                    Back to Forest
-                                </button>
+                                <div style={{ 
+                                    color: '#4CAF50',
+                                    fontSize: '20px',
+                                    marginTop: '20px'
+                                }}>
+                                    Redirecting to next level...
+                                </div>
                             )}
                         </div>
                     </div>
@@ -680,7 +667,7 @@ export default function Cblast({ onChangeWorld, startPosition }) {
 
             <div ref={mapRef} className="map" style={{ backgroundImage: `url(${beachMape})` }}>
                 {/* Display collision areas and portals */}
-                {collision.map((val, idx) => {
+                {/* {collision.map((val, idx) => {
                     if (val === 0) return null;
                     const gridCell = 64;
                     const x = (idx % MAP_WIDTH) * gridCell;
@@ -702,9 +689,9 @@ export default function Cblast({ onChangeWorld, startPosition }) {
                             }}
                         />
                     );
-                })}
+                })} */}
                 {/* Grid overlay */}
-                {renderGridCells()}
+                {/* {renderGridCells()} */}
                 {/* Render Enemies */}
                 {enemies.map(enemy => (
                     <div
