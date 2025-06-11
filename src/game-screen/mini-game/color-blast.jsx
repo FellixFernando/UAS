@@ -63,7 +63,7 @@ function checkPortalDestination(x, y) {
 
 export default function Cblast({ onChangeWorld, startPosition }) {
     const [showGameOverAlert, setShowGameOverAlert] = useState(false);
-    const [timeLeft, setTimeLeft] = useState(10); // 60 detik = 1 menit
+    const [timeLeft, setTimeLeft] = useState(60); // 60 detik = 1 menit
     const [isGameOver, setIsGameOver] = useState(false);
     const [bullets, setBullets] = useState([]);
     const [enemies, setEnemies] = useState([]); // State for enemies
