@@ -4,10 +4,11 @@ import { useTransition } from "./TransitionContext";
 import pickKarakter from "./pick karakter.png";
 import playImg from "./play.png";
 import clickSound from "./button-click.mp3";
-import ceweGede from "./ceweGede.png"; // Static image for button
-import ucup2 from "./ucup2.png"; // Static image for button
+import ceweGede from "./cewe.jpg"; // Static image for button
+import ucup2 from "./ucup.jpg"; // Static image for button
 import bgMusic from "./background-music-main-menu.mp3";
 import spritesCewe from "./spritesCewe.png"; // Spritesheet for ceweGede character
+import ucup2Sprite from "./ucup2.png"; // Spritesheet for ucup character
 import "./character-select.css";
 
 export default function CharacterSelect() {
@@ -61,7 +62,7 @@ export default function CharacterSelect() {
 				setAnimatedCharacterSprite(spritesCewe);
 				setCharacterClass("ceweGede-sprite");
 			} else if (selected === "ucup2") {
-				setAnimatedCharacterSprite(ucup2);
+				setAnimatedCharacterSprite(ucup2Sprite);
 				setCharacterClass("ucup2-sprite");
 			}
 			setCurrentFrame(0); // Reset animation frame
