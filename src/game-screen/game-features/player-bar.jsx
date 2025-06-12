@@ -12,6 +12,7 @@ import day from "../../assets/image/day.png";
 import name from "../../assets/image/name.png";
 import bgDay from "../../assets/image/bgDay.png";
 import bgDuit from "../../assets/image/bgDuit.png";
+import box from "../../assets/image/box.png";
 
 export default function PlayerBar({
 	energyLevel = 100,
