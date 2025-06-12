@@ -13,7 +13,8 @@ import CharacterSelect from "./menu/character-select";
 import { TransitionProvider } from "./menu/TransitionContext";
 import PlayerBar from "./game-screen/game-features/player-bar";
 
-// import CityTown from "./game-screen/game-map/cityTown";
+
+import CityTown from "./game-screen/game-map/cityTown";
 // import CityNight from "./game-screen/game-map/cityNight";
 
 import "./pixelgame.css";
@@ -26,10 +27,11 @@ export default function PixelGame() {
 	const username = location.state?.username || "Player";
 
 	// Player stats
-	const [energyLevel, setEnergyLevel] = useState(100);
-	const [fullnessLevel, setFullnessLevel] = useState(100);
-	const [hygieneLevel, setHygieneLevel] = useState(100);
-	const [moneyAmount, setMoneyAmount] = useState(0);
+	const [energyLevel, setEnergyLevel] = useState(70);
+	const [fullnessLevel, setFullnessLevel] = useState(70);
+	const [hygieneLevel, setHygieneLevel] = useState(70);
+	const [happinessLevel, setHappinessLevel] = useState(70);
+	const [moneyAmount, setMoneyAmount] = useState(10);
 	const [dayCount, setDayCount] = useState(1);
 
 	// Ubah handleChangeWorld agar bisa menerima posisi (opsional untuk kasus ini)
@@ -115,6 +117,7 @@ export default function PixelGame() {
 						energyLevel={energyLevel}
 						fullnessLevel={fullnessLevel}
 						hygieneLevel={hygieneLevel}
+						happinessLevel={happinessLevel}
 						moneyAmount={moneyAmount}
 						dayCount={dayCount}
 						playerName={username}

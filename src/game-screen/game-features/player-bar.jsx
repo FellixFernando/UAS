@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import bgBar from "../../assets/image/bgBar.png";
 import bar from "../../assets/image/bar.png";
 import statusBar from "../../assets/image/statusBar.png";
@@ -14,14 +14,43 @@ import bgDay from "../../assets/image/bgDay.png";
 import bgDuit from "../../assets/image/bgDuit.png";
 
 export default function PlayerBar({
-	energyLevel = 100,
-	fullnessLevel = 100,
-	hygieneLevel = 100,
+	energyLevel = 70,
+	fullnessLevel = 70,
+	hygieneLevel = 70,
 	moneyAmount = 40,
 	dayCount = 1,
 	playerName = "Player",
 	currentLocation,
 }) {
+	const [gameTime, setGameTime] = useState({ hours: 6, minutes: 0 });
+
+	useEffect(() => {
+		const timer = setInterval(() => {
+			setGameTime((prevTime) => {
+				let newMinutes = prevTime.minutes + 2;
+				let newHours = prevTime.hours;
+
+				if (newMinutes >= 60) {
+					newHours += Math.floor(newMinutes / 60);
+					newMinutes = newMinutes % 60;
+				}
+
+				if (newHours >= 24) {
+					newHours = newHours % 24;
+				}
+
+				return { hours: newHours, minutes: newMinutes };
+			});
+		}, 1000);
+
+		return () => clearInterval(timer);
+	}, []);
+
+	// Format time to always show two digits
+	const formatTime = (time) => {
+		return time.toString().padStart(2, "0");
+	};
+
 	// Don't show the bar in these locations
 	const hideInLocations = ["rock-climbing", "cblast", "alive"];
 	if (hideInLocations.includes(currentLocation)) {
@@ -108,7 +137,7 @@ export default function PlayerBar({
 								left: "40px",
 								right: "10px",
 								transform: "translateY(-50%)",
-								height: "15px",
+								height: "10px",
 								background: "#2a2a2a",
 								borderRadius: "7px",
 								overflow: "hidden",
@@ -139,7 +168,7 @@ export default function PlayerBar({
 				))}
 			</div>
 
-			{/* Right section - Money and Day */}
+			{/* Right section - Money, Day, and Time */}
 			<div style={{ display: "flex", gap: "20px", alignItems: "center" }}>
 				{/* Money display */}
 				<div
@@ -226,6 +255,37 @@ export default function PlayerBar({
 							textShadow: "2px 2px 2px rgba(0,0,0,0.5)",
 						}}>
 						{dayCount}
+					</div>
+				</div>
+
+				{/* Time display */}
+				<div
+					style={{
+						position: "relative",
+						width: "120px",
+						height: "40px",
+					}}>
+					<img
+						src={name}
+						alt="Time background"
+						style={{
+							width: "100%",
+							height: "100%",
+							objectFit: "contain",
+						}}
+					/>
+					<div
+						style={{
+							position: "absolute",
+							top: "50%",
+							left: "50%",
+							transform: "translate(-50%, -50%)",
+							color: "white",
+							fontSize: "16px",
+							fontWeight: "bold",
+							textShadow: "2px 2px 2px rgba(0,0,0,0.5)",
+						}}>
+						{formatTime(gameTime.hours)}:{formatTime(gameTime.minutes)}
 					</div>
 				</div>
 			</div>
