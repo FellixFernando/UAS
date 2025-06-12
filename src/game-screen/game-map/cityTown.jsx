@@ -28,6 +28,10 @@ function checkPortalDestination(x, y) {
 	}
 
 	const collisionIndex = gridY * MAP_WIDTH + gridX;
+	
+	if (gridX === 1 && gridY === 10) {
+		return "triangle";
+	}
 
 	if (gridY === 11 && gridX === 19) {
 		return "cblast";
@@ -269,7 +273,7 @@ export default function Beach({ onChangeWorld, startPosition }) {
 
 
 				{/* Display collision areas and portals */}
-				{collision.map((val, idx) => {
+				{/* {collision.map((val, idx) => {
 					if (val === 0) return null;
 					const gridCell = 64;
 					const x = (idx % MAP_WIDTH) * gridCell;
@@ -291,9 +295,9 @@ export default function Beach({ onChangeWorld, startPosition }) {
 							}}
 						/>
 					);
-				})}
+				})} */}
 				{/* Grid overlay */}
-				{renderGridCells()}
+				{/* {renderGridCells()} */}
 				<div
 					ref={characterRef}
 					className="character"

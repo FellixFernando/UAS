@@ -29,7 +29,7 @@ function checkPortalDestination(x, y) {
 	}
 
 	if (gridY === 19 && (gridX === 9 || gridX === 10)) {
-		return "cityTown";
+		return "city";
 	}
 
 	return null;

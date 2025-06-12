@@ -15,14 +15,14 @@ import { TransitionProvider } from "./menu/TransitionContext";
 import PlayerBar from "./game-screen/game-features/player-bar";
 
 
-import CityTown from "./game-screen/game-map/cityTown";
+// import CityTown from "./game-screen/game-map/cityTown";
 // import CityNight from "./game-screen/game-map/cityNight";
 
 import "./pixelgame.css";
 // import Alive from './game-screen/event/alive';
 
 export default function PixelGame() {
-	const [currentWorld, setCurrentWorld] = useState("city"); // Set default world to 'tictactoe'
+	const [currentWorld, setCurrentWorld] = useState("tictactoe"); // Set initial world to tictactoe
 	const location = useLocation();
 	const selectedCharacter = location.state?.character || "ucup2";
 	const username = location.state?.username || "Player";
@@ -43,20 +43,19 @@ export default function PixelGame() {
 		// }
 		console.log(`Mengubah dunia ke: ${newWorld}`); // Untuk debugging
 		setCurrentWorld(newWorld);
-	};
-
+	};	
+	
 	const GameContent = () => {
+		if (currentWorld === "tictactoe") {
+			return (
+				<TicTacToe
+					onChangeWorld={handleChangeWorld}
+				/>
+			);
+		}
+
 		return (
 			<div className="game-screen">
-				{/* {currentWorld === 'cityTown' && <CityTown onChangeWorld={handleChangeWorld} />} */}
-				{/* {currentWorld === "tictactoe" && (
-					<TicTacToe
-						onChangeWorld={handleChangeWorld}
-						character={selectedCharacter}
-						username={username}
-					/>
-				)} */}
-				{/* {currentWorld === 'cityTown' && <CityTown onChangeWorld={handleChangeWorld} />} */}
 				{currentWorld === "city" && (
 					<City
 						onChangeWorld={handleChangeWorld}
@@ -64,7 +63,6 @@ export default function PixelGame() {
 						username={username}
 					/>
 				)}
-				{/* {currentWorld === 'citynight' && <City onChangeWorld={handleChangeWorld} />} */}
 				{currentWorld === "beach" && (
 					<Beach
 						onChangeWorld={handleChangeWorld}
@@ -120,8 +118,7 @@ export default function PixelGame() {
 
 	return (
 		<TransitionProvider>
-			<div className="frame">
-				{location.pathname === "/game" && (
+			<div className="frame">				{location.pathname === "/game" && currentWorld !== "tictactoe" && (
 					<PlayerBar
 						energyLevel={energyLevel}
 						fullnessLevel={fullnessLevel}
@@ -143,13 +140,16 @@ export default function PixelGame() {
 	);
 }
 
+
+
+
 // import { useState } from "react";
 // // import CityTown from "./game-screen/game-map/cityTown";
 // // import CityNight from "./game-screen/game-map/cityNight";
-// import Cblast from './game-screen/mini-game/color-blast'
+// // import Cblast from './game-screen/mini-game/color-blast'
 // // import Triangle from './game-screen/game-map/triangle'
 // import Alive from './game-screen/mini-game/alive'
-// import Cblast from "./game-screen/mini-game/color-blast";
+// // import Cblast from "./game-screen/mini-game/color-blast";
 // // import Kamar1 from './game-screen/game-map/kamar1'
 // // import Forest from './game-screen/game-map/forest';
 // import TicTacToe  from "./game-screen/mini-game/tic-tac-toe";
