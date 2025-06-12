@@ -8,6 +8,7 @@ import PortalConfirmation from "../game-features/portal-confirmation";
 const MAP_WIDTH = 20;
 const MAP_HEIGHT = 20;
 const pixelSize = 1;
+
 function isCollision(x, y) {
 	const gridX = Math.floor(x / 16);
 	const gridY = Math.floor(y / 16);
