@@ -3,6 +3,7 @@ import collision from "../../assets/map/map-collision/map-forest";
 import forestMape from "../../assets/map/map-image/mapHutan.png";
 import "../../Citygame.css";
 import "../../character-sprites.css";
+import PortalConfirmation from "../game-features/portal-confirmation";
 
 const MAP_WIDTH = 20;
 const MAP_HEIGHT = 20;
@@ -61,6 +62,13 @@ export default function Forest({
 		cameraY: startPosition?.y || 9.2 * 32,
 	});
 
+	const [portalState, setPortalState] = useState({
+		showConfirmation: false,
+		targetMap: null,
+		nextX: null,
+		nextY: null,
+	});
+
 	const directions = useMemo(
 		() => ({
 			up: "up",
@@ -114,6 +122,31 @@ export default function Forest({
 		[keys]
 	);
 
+	const handlePortalConfirm = useCallback(() => {
+		if (portalState.targetMap && onChangeWorld) {
+			onChangeWorld(
+				portalState.targetMap,
+				portalState.nextX,
+				portalState.nextY
+			);
+		}
+		setPortalState({
+			showConfirmation: false,
+			targetMap: null,
+			nextX: null,
+			nextY: null,
+		});
+	}, [portalState, onChangeWorld]);
+
+	const handlePortalCancel = useCallback(() => {
+		setPortalState({
+			showConfirmation: false,
+			targetMap: null,
+			nextX: null,
+			nextY: null,
+		});
+	}, []);
+
 	useEffect(() => {
 		let animationFrameId;
 
@@ -149,16 +182,13 @@ export default function Forest({
 					// Check if on portal to city
 					const portalDestination = checkPortalDestination(feetX, feetY);
 					if (portalDestination) {
-						if (onChangeWorld) {
-							onChangeWorld(portalDestination, nextX, nextY);
-						}
-						return {
-							...prev,
-							x: nextX,
-							y: nextY,
-							walking: true,
-							facing: direction,
-						};
+						setPortalState({
+							showConfirmation: true,
+							targetMap: portalDestination,
+							nextX,
+							nextY,
+						});
+						return prev;
 					}
 
 					if (!isCollision(feetX, feetY)) {
@@ -214,7 +244,7 @@ export default function Forest({
 			window.removeEventListener("keyup", handleKeyUp);
 			cancelAnimationFrame(animationFrameId);
 		};
-	}, [directions, handleKeyDown, handleKeyUp, onChangeWorld]);
+	}, [directions, handleKeyDown, handleKeyUp]);
 
 	useEffect(() => {
 		if (!characterRef.current || !mapRef.current) return;
@@ -328,6 +358,14 @@ export default function Forest({
 				</div>
 			</div>
 			<div className="username-display">{username}</div>
+			<div className="username-display">{username}</div>
+			{portalState.showConfirmation && (
+				<PortalConfirmation
+					targetMap={portalState.targetMap}
+					onConfirm={handlePortalConfirm}
+					onCancel={handlePortalCancel}
+				/>
+			)}
 		</div>
 	);
 }

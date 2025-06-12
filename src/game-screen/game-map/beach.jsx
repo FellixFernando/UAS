@@ -3,6 +3,7 @@ import collision from "../../assets/map/map-collision/map-pantai";
 import beachMape from "../../assets/map/map-image/mapPantai.png";
 import "../../Citygame.css";
 import "../../character-sprites.css";
+import PortalConfirmation from "../game-features/portal-confirmation";
 
 const MAP_WIDTH = 20;
 const MAP_HEIGHT = 20;
@@ -20,12 +21,16 @@ function isCollision(x, y) {
 }
 
 // Function to check if position is a portal back to city
-function isPortalToCity(x, y) {
+function checkPortalDestination(x, y) {
 	const gridX = Math.floor(x / 16);
 	const gridY = Math.floor(y / 16);
 
 	if (gridX < 0 || gridX >= MAP_WIDTH || gridY < 0 || gridY >= MAP_HEIGHT) {
 		return false;
+	}
+
+	if (gridY === 6 && gridX === 19) {
+		return "city";
 	}
 
 	const collisionIndex = gridY * MAP_WIDTH + gridX;
@@ -51,6 +56,13 @@ export default function Beach({
 		walking: false,
 		cameraX: startPosition?.x || 9.2 * 32,
 		cameraY: startPosition?.y || 3.3 * 32,
+	});
+
+	const [portalState, setPortalState] = useState({
+		showConfirmation: false,
+		targetMap: null,
+		nextX: null,
+		nextY: null,
 	});
 
 	const directions = useMemo(
@@ -106,6 +118,31 @@ export default function Beach({
 		[keys]
 	);
 
+	const handlePortalConfirm = useCallback(() => {
+		if (portalState.targetMap && onChangeWorld) {
+			onChangeWorld(
+				portalState.targetMap,
+				portalState.nextX,
+				portalState.nextY
+			);
+		}
+		setPortalState({
+			showConfirmation: false,
+			targetMap: null,
+			nextX: null,
+			nextY: null,
+		});
+	}, [portalState, onChangeWorld]);
+
+	const handlePortalCancel = useCallback(() => {
+		setPortalState({
+			showConfirmation: false,
+			targetMap: null,
+			nextX: null,
+			nextY: null,
+		});
+	}, []);
+
 	useEffect(() => {
 		let animationFrameId;
 
@@ -139,18 +176,15 @@ export default function Beach({
 					const feetY = nextY + characterHeight;
 
 					// Check if on portal to city
-					if (isPortalToCity(feetX, feetY)) {
-						if (onChangeWorld) {
-							// Change world to city and send current position
-							onChangeWorld("city", nextX, nextY);
-						}
-						return {
-							...prev,
-							x: nextX,
-							y: nextY,
-							walking: true,
-							facing: direction,
-						};
+					const portalDestination = checkPortalDestination(feetX, feetY);
+					if (portalDestination) {
+						setPortalState({
+							showConfirmation: true,
+							targetMap: portalDestination,
+							nextX,
+							nextY,
+						});
+						return prev;
 					}
 
 					if (!isCollision(feetX, feetY)) {
@@ -206,7 +240,7 @@ export default function Beach({
 			window.removeEventListener("keyup", handleKeyUp);
 			cancelAnimationFrame(animationFrameId);
 		};
-	}, [directions, handleKeyDown, handleKeyUp, onChangeWorld]);
+	}, [directions, handleKeyDown, handleKeyUp]);
 
 	useEffect(() => {
 		if (!characterRef.current || !mapRef.current) return;
@@ -293,6 +327,13 @@ export default function Beach({
 				</div>
 			</div>
 			<div className="username-display">{username}</div>
+			{portalState.showConfirmation && (
+				<PortalConfirmation
+					targetMap={portalState.targetMap}
+					onConfirm={handlePortalConfirm}
+					onCancel={handlePortalCancel}
+				/>
+			)}
 		</div>
 	);
 }

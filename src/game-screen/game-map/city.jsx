@@ -3,10 +3,12 @@ import collision from "../../assets/map/map-collision/map-city";
 import cityMape from "../../assets/map/map-image/townDefault.png";
 import "../../Citygame.css";
 import "../../character-sprites.css";
+import PortalConfirmation from "../game-features/portal-confirmation";
 
 const MAP_WIDTH = 20;
 const MAP_HEIGHT = 20;
 const pixelSize = 1;
+
 function isCollision(x, y) {
 	const gridX = Math.floor(x / 16);
 	const gridY = Math.floor(y / 16);
@@ -76,6 +78,13 @@ export default function City({
 		cameraY: startPosition?.y || 8 * 32,
 	});
 
+	const [portalState, setPortalState] = useState({
+		showConfirmation: false,
+		targetMap: null,
+		nextX: null,
+		nextY: null,
+	});
+
 	const directions = useMemo(
 		() => ({
 			up: "up",
@@ -129,6 +138,31 @@ export default function City({
 		[keys]
 	);
 
+	const handlePortalConfirm = useCallback(() => {
+		if (portalState.targetMap && onChangeWorld) {
+			onChangeWorld(
+				portalState.targetMap,
+				portalState.nextX,
+				portalState.nextY
+			);
+		}
+		setPortalState({
+			showConfirmation: false,
+			targetMap: null,
+			nextX: null,
+			nextY: null,
+		});
+	}, [portalState, onChangeWorld]);
+
+	const handlePortalCancel = useCallback(() => {
+		setPortalState({
+			showConfirmation: false,
+			targetMap: null,
+			nextX: null,
+			nextY: null,
+		});
+	}, []);
+
 	useEffect(() => {
 		let animationFrameId;
 
@@ -164,17 +198,13 @@ export default function City({
 					// Check if on portal to city
 					const portalDestination = checkPortalDestination(feetX, feetY);
 					if (portalDestination) {
-						if (onChangeWorld) {
-							// Send current position and destination
-							onChangeWorld(portalDestination, nextX, nextY);
-						}
-						return {
-							...prev,
-							x: nextX,
-							y: nextY,
-							walking: true,
-							facing: direction,
-						};
+						setPortalState({
+							showConfirmation: true,
+							targetMap: portalDestination,
+							nextX,
+							nextY,
+						});
+						return prev;
 					}
 
 					if (!isCollision(feetX, feetY)) {
@@ -230,7 +260,7 @@ export default function City({
 			window.removeEventListener("keyup", handleKeyUp);
 			cancelAnimationFrame(animationFrameId);
 		};
-	}, [directions, handleKeyDown, handleKeyUp, onChangeWorld]);
+	}, [directions, handleKeyDown, handleKeyUp]);
 
 	useEffect(() => {
 		if (!characterRef.current || !mapRef.current) return;
@@ -306,9 +336,6 @@ export default function City({
 							-gameState.cameraY * pixelSize
 						}px, 0)`,
 					}}>
-
-								
-		
 					<div
 						ref={characterRef}
 						className="character"
@@ -320,6 +347,13 @@ export default function City({
 				</div>
 			</div>
 			<div className="username-display">{username}</div>
+			{portalState.showConfirmation && (
+				<PortalConfirmation
+					targetMap={portalState.targetMap}
+					onConfirm={handlePortalConfirm}
+					onCancel={handlePortalCancel}
+				/>
+			)}
 		</div>
 	);
 }
