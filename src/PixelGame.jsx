@@ -8,6 +8,7 @@ import Triangle from "./game-screen/game-map/triangle";
 import Kamar1 from "./game-screen/game-map/kamar1";
 import Alive from "./game-screen/mini-game/alive";
 import RockClimbing from "./game-screen/mini-game/rock-climbing";
+import TicTacToe from "./game-screen/mini-game/tic-tac-toe";
 import MainMenu from "./menu/main-menu";
 import CharacterSelect from "./menu/character-select";
 import { TransitionProvider } from "./menu/TransitionContext";
@@ -19,7 +20,7 @@ import "./pixelgame.css";
 // import Alive from './game-screen/event/alive';
 
 export default function PixelGame() {
-	const [currentWorld, setCurrentWorld] = useState("city");
+	const [currentWorld, setCurrentWorld] = useState("city"); // Set default world to 'tictactoe'
 	const location = useLocation();
 	const selectedCharacter = location.state?.character || "ucup2";
 	const username = location.state?.username || "Player";
@@ -37,6 +38,14 @@ export default function PixelGame() {
 	const GameContent = () => {
 		return (
 			<div className="game-screen">
+				{/* {currentWorld === 'cityTown' && <CityTown onChangeWorld={handleChangeWorld} />} */}
+				{/* {currentWorld === "tictactoe" && (
+					<TicTacToe
+						onChangeWorld={handleChangeWorld}
+						character={selectedCharacter}
+						username={username}
+					/>
+				)} */}
 				{/* {currentWorld === 'cityTown' && <CityTown onChangeWorld={handleChangeWorld} />} */}
 				{currentWorld === "city" && (
 					<City
@@ -113,21 +122,18 @@ export default function PixelGame() {
 }
 
 // import { useState } from "react";
-// // // import CityTown from "./game-screen/game-map/cityTown";
-// // // import CityNight from "./game-screen/game-map/cityNight";
-// // import Cblast from './game-screen/mini-game/color-blast'
-// // // import Triangle from './game-screen/game-map/triangle'
-// // import Alive from './game-screen/mini-game/alive'
+// // import CityTown from "./game-screen/game-map/cityTown";
+// // import CityNight from "./game-screen/game-map/cityNight";
+// import Cblast from './game-screen/mini-game/color-blast'
+// // import Triangle from './game-screen/game-map/triangle'
+// import Alive from './game-screen/mini-game/alive'
 // import Cblast from "./game-screen/mini-game/color-blast";
-// // // import Kamar1 from './game-screen/game-map/kamar1'
-// // // import Forest from './game-screen/game-map/forest';
+// // import Kamar1 from './game-screen/game-map/kamar1'
+// // import Forest from './game-screen/game-map/forest';
+// import TicTacToe  from "./game-screen/mini-game/tic-tac-toe";
 
 // export default function PixelGame() {
 //     return (
-//         <div className="frame">
-//             <div className="game-screen">
-//                 <Cblast/>
-//             </div>
-//         </div>
+//         <TicTacToe/>
 //     )
 // }
