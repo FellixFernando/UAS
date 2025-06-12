@@ -12,11 +12,13 @@ import day from "../../assets/image/day.png";
 import name from "../../assets/image/name.png";
 import bgDay from "../../assets/image/bgDay.png";
 import bgDuit from "../../assets/image/bgDuit.png";
+import hati from "../../assets/image/hati.png";
 
 export default function PlayerBar({
 	energyLevel = 70,
 	fullnessLevel = 70,
 	hygieneLevel = 70,
+	happinessLevel = 70,
 	moneyAmount = 40,
 	dayCount = 1,
 	playerName = "Player",
@@ -64,230 +66,273 @@ export default function PlayerBar({
 		<div
 			style={{
 				position: "fixed",
-				top: 0,
+				top: 16,
 				left: 0,
-				right: 0,
+				width: "100vw",
+				height: "120px",
 				zIndex: 1000,
-				padding: "10px 20px",
-				display: "flex",
-				justifyContent: "space-between",
-				alignItems: "center",
 				pointerEvents: "none",
 			}}>
-			{/* Left section - Status bars */}
-			<div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-				{/* Name display */}
-				<div
-					style={{
-						position: "relative",
-						width: "200px",
-						height: "40px",
-						marginRight: "20px",
-					}}>
-					<img
-						src={name}
-						alt="Name background"
-						style={{
-							width: "100%",
-							height: "100%",
-							objectFit: "contain",
-						}}
-					/>
-					<div
-						style={{
-							position: "absolute",
-							top: "50%",
-							left: "50%",
-							transform: "translate(-50%, -50%)",
-							color: "white",
-							fontSize: "16px",
-							fontWeight: "bold",
-							textShadow: "2px 2px 2px rgba(0,0,0,0.5)",
-						}}>
-						{playerName}
-					</div>
-				</div>
+			{/* Main status bar background */}
+			<img
+				src={statusBar}
+				alt="Status Bar Background"
+				style={{
+					position: "absolute",
+					top: 0,
+					left: 0,
+					width: "100vw",
+					height: "120px",
+					objectFit: "cover",
+					zIndex: 1,
+				}}
+			/>
 
-				{/* Status bars */}
-				{[
-					{ icon: energy, value: energyLevel, color: "#ff5757" },
-					{ icon: fullness, value: fullnessLevel, color: "#57ff5e" },
-					{ icon: hygiene, value: hygieneLevel, color: "#5797ff" },
-				].map((status, index) => (
-					<div
-						key={index}
-						style={{
-							position: "relative",
-							width: "150px",
-							height: "40px",
-						}}>
-						<img
-							src={bgBar}
-							alt="Bar background"
-							style={{
-								width: "100%",
-								height: "100%",
-								objectFit: "contain",
-							}}
-						/>
-						<div
-							style={{
-								position: "absolute",
-								top: "50%",
-								left: "40px",
-								right: "10px",
-								transform: "translateY(-50%)",
-								height: "10px",
-								background: "#2a2a2a",
-								borderRadius: "7px",
-								overflow: "hidden",
-							}}>
-							<div
-								style={{
-									width: getBarWidth(status.value),
-									height: "100%",
-									background: status.color,
-									transition: "width 0.3s ease",
-								}}
-							/>
-						</div>
-						<img
-							src={status.icon}
-							alt="Status icon"
-							style={{
-								position: "absolute",
-								left: "5px",
-								top: "50%",
-								transform: "translateY(-50%)",
-								width: "30px",
-								height: "30px",
-								objectFit: "contain",
-							}}
-						/>
-					</div>
-				))}
+			{/* Name/portrait area (left) */}
+			<div
+				style={{
+					position: "absolute",
+					top: 18,
+					left: 32,
+					width: 120,
+					height: 48,
+					display: "flex",
+					alignItems: "center",
+					justifyContent: "center",
+					zIndex: 2,
+				}}>
+				<span
+					style={{
+						color: "#fff",
+						fontWeight: "bold",
+						fontSize: 18,
+						textShadow: "2px 2px 2px #0008",
+					}}>
+					{playerName}
+				</span>
 			</div>
 
-			{/* Right section - Money, Day, and Time */}
-			<div style={{ display: "flex", gap: "20px", alignItems: "center" }}>
-				{/* Money display */}
-				<div
+			{/* Clock (bottom left) */}
+			<div
+				style={{
+					position: "absolute",
+					bottom: 8,
+					left: 38,
+					width: 60,
+					height: 28,
+					display: "flex",
+					alignItems: "center",
+					justifyContent: "center",
+					zIndex: 2,
+				}}>
+				<span
 					style={{
-						position: "relative",
-						width: "150px",
-						height: "40px",
+						color: "#fff",
+						fontWeight: "bold",
+						fontSize: 16,
+						textShadow: "2px 2px 2px #0008",
 					}}>
-					<img
-						src={bgDuit}
-						alt="Money background"
-						style={{
-							width: "100%",
-							height: "100%",
-							objectFit: "contain",
-						}}
-					/>
-					<img
-						src={logoDuit}
-						alt="Money icon"
-						style={{
-							position: "absolute",
-							left: "5px",
-							top: "50%",
-							transform: "translateY(-50%)",
-							width: "30px",
-							height: "30px",
-							objectFit: "contain",
-						}}
-					/>
-					<div
-						style={{
-							position: "absolute",
-							top: "50%",
-							right: "20px",
-							transform: "translateY(-50%)",
-							color: "white",
-							fontSize: "16px",
-							fontWeight: "bold",
-							textShadow: "2px 2px 2px rgba(0,0,0,0.5)",
-						}}>
-						${moneyAmount}
-					</div>
-				</div>
+					{formatTime(gameTime.hours)}:{formatTime(gameTime.minutes)}
+				</span>
+			</div>
 
-				{/* Day counter */}
+			{/* Status bars (top row) */}
+			{/* Energy */}
+			<div
+				style={{
+					position: "absolute",
+					top: 24,
+					left: 180,
+					width: 260,
+					height: 32,
+					zIndex: 2,
+				}}>
+				<img
+					src={energy}
+					alt="Energy"
+					style={{
+						position: "absolute",
+						left: 0,
+						top: 2,
+						width: 28,
+						height: 28,
+					}}
+				/>
 				<div
 					style={{
-						position: "relative",
-						width: "100px",
-						height: "40px",
+						position: "absolute",
+						left: 38,
+						top: 12,
+						width: 200,
+						height: 10,
+						background: "#2a2a2a",
+						borderRadius: 7,
+						overflow: "hidden",
 					}}>
-					<img
-						src={bgDay}
-						alt="Day background"
-						style={{
-							width: "100%",
-							height: "100%",
-							objectFit: "contain",
-						}}
-					/>
-					<img
-						src={day}
-						alt="Day icon"
-						style={{
-							position: "absolute",
-							left: "5px",
-							top: "50%",
-							transform: "translateY(-50%)",
-							width: "30px",
-							height: "30px",
-							objectFit: "contain",
-						}}
-					/>
 					<div
 						style={{
-							position: "absolute",
-							top: "50%",
-							right: "20px",
-							transform: "translateY(-50%)",
-							color: "white",
-							fontSize: "16px",
-							fontWeight: "bold",
-							textShadow: "2px 2px 2px rgba(0,0,0,0.5)",
-						}}>
-						{dayCount}
-					</div>
+							width: getBarWidth(energyLevel),
+							height: "100%",
+							background: "#ff5757",
+							transition: "width 0.3s",
+						}}
+					/>
 				</div>
+			</div>
+			{/* Happiness */}
+			<div
+				style={{
+					position: "absolute",
+					top: 24,
+					left: 470,
+					width: 260,
+					height: 32,
+					zIndex: 2,
+				}}>
+				<img
+					src={hati}
+					alt="Happiness"
+					style={{
+						position: "absolute",
+						left: 0,
+						top: 2,
+						width: 28,
+						height: 28,
+					}}
+				/>
+				<div
+					style={{
+						position: "absolute",
+						left: 38,
+						top: 12,
+						width: 200,
+						height: 10,
+						background: "#2a2a2a",
+						borderRadius: 7,
+						overflow: "hidden",
+					}}>
+					<div
+						style={{
+							width: getBarWidth(happinessLevel),
+							height: "100%",
+							background: "#FEC417",
+							transition: "width 0.3s",
+						}}
+					/>
+				</div>
+			</div>
+			{/* Fullness */}
+			<div
+				style={{
+					position: "absolute",
+					top: 24,
+					left: 760,
+					width: 260,
+					height: 32,
+					zIndex: 2,
+				}}>
+				<img
+					src={fullness}
+					alt="Fullness"
+					style={{
+						position: "absolute",
+						left: 0,
+						top: 2,
+						width: 28,
+						height: 28,
+					}}
+				/>
+				<div
+					style={{
+						position: "absolute",
+						left: 38,
+						top: 12,
+						width: 200,
+						height: 10,
+						background: "#2a2a2a",
+						borderRadius: 7,
+						overflow: "hidden",
+					}}>
+					<div
+						style={{
+							width: getBarWidth(fullnessLevel),
+							height: "100%",
+							background: "#57ff5e",
+							transition: "width 0.3s",
+						}}
+					/>
+				</div>
+			</div>
+			{/* Hygiene */}
+			<div
+				style={{
+					position: "absolute",
+					top: 24,
+					left: 1050,
+					width: 260,
+					height: 32,
+					zIndex: 2,
+				}}>
+				<img
+					src={hygiene}
+					alt="Hygiene"
+					style={{
+						position: "absolute",
+						left: 0,
+						top: 2,
+						width: 28,
+						height: 28,
+					}}
+				/>
+				<div
+					style={{
+						position: "absolute",
+						left: 38,
+						top: 12,
+						width: 200,
+						height: 10,
+						background: "#2a2a2a",
+						borderRadius: 7,
+						overflow: "hidden",
+					}}>
+					<div
+						style={{
+							width: getBarWidth(hygieneLevel),
+							height: "100%",
+							background: "#5797ff",
+							transition: "width 0.3s",
+						}}
+					/>
+				</div>
+			</div>
 
-				{/* Time display */}
-				<div
+			{/* Money (right slot) */}
+			<div
+				style={{
+					position: "absolute",
+					top: 60,
+					right: 90,
+					width: 120,
+					height: 36,
+					zIndex: 2,
+					display: "flex",
+					alignItems: "center",
+					justifyContent: "flex-end",
+				}}>
+				<img
+					src={logoDuit}
+					alt="Money icon"
+					style={{ width: 28, height: 28, marginRight: 8 }}
+				/>
+				<span
 					style={{
-						position: "relative",
-						width: "120px",
-						height: "40px",
+						color: "#fff",
+						fontWeight: "bold",
+						fontSize: 18,
+						textShadow: "2px 2px 2px #0008",
 					}}>
-					<img
-						src={name}
-						alt="Time background"
-						style={{
-							width: "100%",
-							height: "100%",
-							objectFit: "contain",
-						}}
-					/>
-					<div
-						style={{
-							position: "absolute",
-							top: "50%",
-							left: "50%",
-							transform: "translate(-50%, -50%)",
-							color: "white",
-							fontSize: "16px",
-							fontWeight: "bold",
-							textShadow: "2px 2px 2px rgba(0,0,0,0.5)",
-						}}>
-						{formatTime(gameTime.hours)}:{formatTime(gameTime.minutes)}
-					</div>
-				</div>
+					${moneyAmount}
+				</span>
 			</div>
 		</div>
 	);
