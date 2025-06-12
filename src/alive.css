@@ -1,126 +1,132 @@
 :root {
-  --alive-grid-cell: 64px;
+	--alive-grid-cell: 64px;
 }
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
 }
 
-body, .container-haha {
-  overflow: hidden;
-  width: 100vw;
-  height: 100vh;
-  background-color: transparent;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+body,
+.container-haha {
+	overflow: hidden;
+	width: 100vw;
+	height: 100vh;
+	background-color: transparent;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .alive-game .map {
-    image-rendering: pixelated;
-    background-size: 100%;
-    width: calc(60 * var(--alive-grid-cell));
-    height: calc(60 * var(--alive-grid-cell));
-    position: relative;
+	image-rendering: pixelated;
+	background-size: 100%;
+	width: calc(60 * var(--alive-grid-cell));
+	height: calc(60 * var(--alive-grid-cell));
+	position: relative;
 }
 
 .alive-game .character {
-  width: calc(var(--alive-grid-cell) * 2);
-  height: calc(var(--alive-grid-cell) * 1.8);
-  position: absolute;
-  overflow: hidden;
-  transform: translate(calc(var(--alive-grid-cell) * var(--x)), calc(var(--alive-grid-cell) * var(--y)));
+	width: calc(var(--alive-grid-cell) * 2);
+	height: calc(var(--alive-grid-cell) * 1.8);
+	position: absolute;
+	overflow: hidden;
+	transform: translate(
+		calc(var(--alive-grid-cell) * var(--x)),
+		calc(var(--alive-grid-cell) * var(--y))
+	);
 }
 
-
-
 .character_spritesheet {
-  position: absolute;
-  background: url("./assets/image/gede.png") no-repeat no-repeat;
-  background-size: 100%;
-  width: calc(var(--alive-grid-cell) * 8);
-  height: calc(var(--alive-grid-cell) * 8);
-  image-rendering: pixelated;
+	position: absolute;
+	background: url("./assets/image/gede.png") no-repeat no-repeat;
+	background-size: 100%;
+	width: calc(var(--alive-grid-cell) * 8);
+	height: calc(var(--alive-grid-cell) * 8);
+	image-rendering: pixelated;
 }
 
 /* Arah hadap */
 .character[facing="down"] .character_spritesheet {
-  background-position-y: 0; 
+	background-position-y: 0;
 }
 .character[facing="right"] .character_spritesheet {
-  background-position-y: calc(var(--alive-grid-cell) * -270 / 64);
+	background-position-y: calc(var(--alive-grid-cell) * -270 / 64);
 }
 .character[facing="up"] .character_spritesheet {
-  background-position-y: calc(var(--alive-grid-cell) * -382 / 64);
+	background-position-y: calc(var(--alive-grid-cell) * -382 / 64);
 }
 .character[facing="left"] .character_spritesheet {
-  background-position-y: calc(var(--alive-grid-cell) * -130 / 64);
+	background-position-y: calc(var(--alive-grid-cell) * -130 / 64);
 }
 
 .character[walking="true"] .character_spritesheet {
-  animation: walkAnimation 0.6s steps(4) infinite;
+	animation: walkAnimation 0.6s steps(4) infinite;
 }
-
-
-
 
 /* Style khusus untuk NPC (Skeleton) */
 .character.npc {
-   width: calc(var(--alive-grid-cell) * 1.6);
-  height: calc(var(--alive-grid-cell) * 1.5);
-  position: absolute;
-  overflow: hidden;
-  /* Gunakan transform untuk posisi yang lebih mulus */
-  transform: translate(calc(var(--alive-grid-cell) * var(--x)), calc(var(--alive-grid-cell) * var(--y)));
-  /* Hapus left dan top agar tidak konflik */
+	width: calc(var(--alive-grid-cell) * 1.6);
+	height: calc(var(--alive-grid-cell) * 1.5);
+	position: absolute;
+	overflow: hidden;
+	/* Gunakan transform untuk posisi yang lebih mulus */
+	transform: translate(
+		calc(var(--alive-grid-cell) * var(--x)),
+		calc(var(--alive-grid-cell) * var(--y))
+	);
+	/* Hapus left dan top agar tidak konflik */
 }
 
 .character.npc .npc_spritesheet {
-  position: absolute;
-  background: url("./assets/image/skeloton[2].png") no-repeat no-repeat;
-  background-size: 100%;
-  width: calc(var(--alive-grid-cell) * 8);
-  height: calc(var(--alive-grid-cell) * 8);
-  image-rendering: pixelated;
+	position: absolute;
+	background: url("./assets/image/skeloton[2].png") no-repeat no-repeat;
+	background-size: 100%;
+	width: calc(var(--alive-grid-cell) * 8);
+	height: calc(var(--alive-grid-cell) * 8);
+	image-rendering: pixelated;
 }
 
 .character.npc[facing="down"] .npc_spritesheet {
-  background-position-y: 0%;
+	background-position-y: 0%;
 }
 .character.npc[facing="right"] .npc_spritesheet {
-  background-position-y: calc(var(--alive-grid-cell) * -75 / 64);
+	background-position-y: calc(var(--alive-grid-cell) * -75 / 64);
 }
 .character.npc[facing="up"] .npc_spritesheet {
-  background-position-y: calc(var(--alive-grid-cell) * -270 / 64);
+	background-position-y: calc(var(--alive-grid-cell) * -270 / 64);
 }
 .character.npc[facing="left"] .npc_spritesheet {
-  background-position-y: calc(var(--alive-grid-cell) * -170 / 64);
+	background-position-y: calc(var(--alive-grid-cell) * -170 / 64);
 }
 
 .character.npc[walking="true"] .npc_spritesheet {
-  animation: walkAnimation 0.6s steps(6) infinite;
+	animation: walkAnimation 0.6s steps(6) infinite;
 }
 
 @keyframes walkAnimation {
-  from {
-    transform: translate3d(0%, 0%, 0);
-  }
-  to {
-    transform: translate3d(-100%, 0%, 0);
-  }
+	from {
+		transform: translate3d(0%, 0%, 0);
+	}
+	to {
+		transform: translate3d(-100%, 0%, 0);
+	}
 }
 
-
-
 @keyframes warningPulse {
-  0% { opacity: 1; }
-  50% { opacity: 0.5; }
-  100% { opacity: 1; }
+	0% {
+		opacity: 1;
+	}
+	50% {
+		opacity: 0.5;
+	}
+	100% {
+		opacity: 1;
+	}
 }
 
 .timer-warning {
-  color: #ff0000 !important;
-  animation: warningPulse 1s ease-in-out infinite;
-  text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+	color: #ff0000 !important;
+	animation: warningPulse 1s ease-in-out infinite;
+	text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
 }

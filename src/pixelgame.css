@@ -21,8 +21,8 @@ body {
 
 /* Frame for the game */
 .frame {
-    width: calc(var(--pixel-size) * 360);
-    height: calc(var(--pixel-size) * 204);
+    width: calc(var(--pixel-size) * 340);
+    height: calc(var(--pixel-size) * 170);
     /* height: 100%;
     width: 100%; */
     outline: 5px solid #fff;
@@ -32,8 +32,8 @@ body {
 
 /* Game screen container */
 .game-screen {
-    width: calc(var(--pixel-size) * 360);
-    height: calc(var(--pixel-size) * 204);
+    width: calc(var(--pixel-size) * 340);
+    height: calc(var(--pixel-size) * 170);
     /* height: 100%;
     width: 100%; */
     overflow: hidden;

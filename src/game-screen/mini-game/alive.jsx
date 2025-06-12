@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import "../../alive.css";
 import collisionAlive from "../../assets/map/map-collision/alives";
 import gameMapDataUrl from "../../assets/map/map-image/itsalive.png";
-import "../../character-sprites.css";
+import "../../character-sprites.css"; // Ensure this is imported for sprite definitions
 
 // --- CONSTANTS ---
 const PLAYER_INITIAL_SPAWN = { x: 15, y: 12 };
@@ -65,7 +65,7 @@ const calculateAccessibleCells = (map, startPos, gridSize) => {
 export default function Alive({
 	onChangeWorld,
 	startPosition,
-	character = "ucup2",
+	character = "ucup2", // Add character prop with a default
 	username = "Player",
 }) {
 	// --- STATE MANAGEMENT ---
@@ -101,6 +101,8 @@ export default function Alive({
 	const [isGameOver, setIsGameOver] = useState(false);
 	const [gameMessage, setGameMessage] = useState("");
 	const [pressedKeys, setPressedKeys] = useState(new Set());
+
+	// NOTE: Removed playerSpriteUrl useMemo as background-image is handled by CSS
 
 	// --- VIEWPORT CALCULATION ---
 	const VIEWPORT_WIDTH_CELLS = Math.floor(
@@ -334,7 +336,7 @@ export default function Alive({
 
 		animationFrameId = requestAnimationFrame(gameLoop);
 		return () => cancelAnimationFrame(animationFrameId);
-	}, [pressedKeys, isGameOver, gameMap]);
+	}, [pressedKeys, isGameOver, gameMap, isWin]); // Added isWin to dependencies
 
 	// --- NPC PATHFINDING INTERVAL ---
 	const MIN_NPC_DISTANCE = 2; // Jarak minimum antar NPC dalam grid units
@@ -406,7 +408,14 @@ export default function Alive({
 		}, 750);
 
 		return () => clearInterval(pathfindingInterval);
-	}, [isGameOver, gameMap, findPath, npcs.length, getRandomEmptyPosition]);
+	}, [
+		isGameOver,
+		gameMap,
+		findPath,
+		npcs.length,
+		getRandomEmptyPosition,
+		isWin,
+	]); // Added isWin to dependencies
 
 	// --- GAME OVER CHECK ---
 	useEffect(() => {
@@ -475,6 +484,15 @@ export default function Alive({
 		-(GRID_SIZE * CELL_SIZE - VIEWPORT_HEIGHT_PIXELS)
 	);
 
+	useEffect(() => {
+		if (isWin) {
+			const timer = setTimeout(() => {
+				if (onChangeWorld) onChangeWorld("city");
+			}, 1000);
+			return () => clearTimeout(timer);
+		}
+	}, [isWin, onChangeWorld]);
+
 	return (
 		<div className="container-haha alive-game">
 			<div
@@ -498,13 +516,15 @@ export default function Alive({
 					{/* Player */}
 					<div
 						className="character"
+						data-character={character}
 						style={{
 							"--x": playerPos.x,
 							"--y": playerPos.y,
 						}}
 						facing={playerFacing}
 						walking={playerWalking.toString()}>
-						<div className="character_spritesheet"></div>
+						<div className="character_spritesheet" />{" "}
+						{/* No inline background-image needed */}
 					</div>
 
 					{/* NPCs */}

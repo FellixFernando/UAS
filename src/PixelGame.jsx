@@ -7,6 +7,7 @@ import Cblast from "./game-screen/mini-game/color-blast";
 import Triangle from "./game-screen/game-map/triangle";
 import Kamar1 from "./game-screen/game-map/kamar1";
 import Alive from "./game-screen/mini-game/alive";
+import RockClimbing from "./game-screen/mini-game/rock-climbing";
 import MainMenu from "./menu/main-menu";
 import CharacterSelect from "./menu/character-select";
 import { TransitionProvider } from "./menu/TransitionContext";
@@ -82,6 +83,13 @@ export default function PixelGame() {
 				)}
 				{currentWorld === "alive" && (
 					<Alive
+						onChangeWorld={handleChangeWorld}
+						character={selectedCharacter}
+						username={username}
+					/>
+				)}
+				{currentWorld === "rock-climbing" && (
+					<RockClimbing
 						onChangeWorld={handleChangeWorld}
 						character={selectedCharacter}
 						username={username}

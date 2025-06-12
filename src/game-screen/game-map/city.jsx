@@ -62,7 +62,7 @@ export default function City({
 	character = "ucup2",
 	username = "Player",
 }) {
-	console.log("forest");
+	console.log("city");
 
 	const characterRef = useRef(null);
 	const mapRef = useRef(null);
