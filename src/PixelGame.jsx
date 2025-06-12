@@ -12,6 +12,7 @@ import TicTacToe from "./game-screen/mini-game/tic-tac-toe";
 import MainMenu from "./menu/main-menu";
 import CharacterSelect from "./menu/character-select";
 import { TransitionProvider } from "./menu/TransitionContext";
+import PlayerBar from "./game-screen/game-features/player-bar";
 
 // import CityTown from "./game-screen/game-map/cityTown";
 // import CityNight from "./game-screen/game-map/cityNight";
@@ -24,6 +25,13 @@ export default function PixelGame() {
 	const location = useLocation();
 	const selectedCharacter = location.state?.character || "ucup2";
 	const username = location.state?.username || "Player";
+
+	// Player stats
+	const [energyLevel, setEnergyLevel] = useState(100);
+	const [fullnessLevel, setFullnessLevel] = useState(100);
+	const [hygieneLevel, setHygieneLevel] = useState(100);
+	const [moneyAmount, setMoneyAmount] = useState(0);
+	const [dayCount, setDayCount] = useState(1);
 
 	// Ubah handleChangeWorld agar bisa menerima posisi (opsional untuk kasus ini)
 	const handleChangeWorld = (newWorld, startPos) => {
@@ -111,6 +119,17 @@ export default function PixelGame() {
 	return (
 		<TransitionProvider>
 			<div className="frame">
+				{location.pathname === "/game" && (
+					<PlayerBar
+						energyLevel={energyLevel}
+						fullnessLevel={fullnessLevel}
+						hygieneLevel={hygieneLevel}
+						moneyAmount={moneyAmount}
+						dayCount={dayCount}
+						playerName={username}
+						currentLocation={currentWorld}
+					/>
+				)}
 				<Routes>
 					<Route path="/" element={<MainMenu />} />
 					<Route path="/character-select" element={<CharacterSelect />} />
