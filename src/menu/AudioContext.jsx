@@ -21,11 +21,11 @@ export function AudioProvider({ children }) {
 	const audioRef = useRef(null);
 	const audioContextRef = useRef(null);
 
-	useEffect(() => {
+	useEffect(() => { 
 		// Initialize audio
 		audioRef.current = new Audio(bgMusic);
 		audioRef.current.loop = true;
-		audioRef.current.volume = 0.5;
+		audioRef.current.volume = 0.2;
 
 		// Try to play music if it was playing before
 		if (isMusicPlaying) {
