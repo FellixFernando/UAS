@@ -7,6 +7,7 @@ import Cblast from "./game-screen/mini-game/color-blast";
 import Triangle from "./game-screen/game-map/triangle";
 import Kamar1 from "./game-screen/game-map/kamar1";
 import Alive from "./game-screen/mini-game/alive";
+import GedungSeni from "./game-screen/game-map/gedungSeni";
 import RockClimbing from "./game-screen/mini-game/rock-climbing";
 import TicTacToe from "./game-screen/mini-game/tic-tac-toe";
 import MainMenu from "./menu/main-menu";
@@ -70,6 +71,14 @@ export default function PixelGame() {
 						username={username}
 					/>
 				)}
+				{currentWorld === "gedungSeni" && (
+					<GedungSeni
+						onChangeWorld={handleChangeWorld}
+						character={selectedCharacter}
+						username={username}
+					/>
+				)}
+				
 				{currentWorld === "forest" && (
 					<Forest
 						onChangeWorld={handleChangeWorld}
@@ -144,18 +153,20 @@ export default function PixelGame() {
 
 
 // import { useState } from "react";
-// // import CityTown from "./game-screen/game-map/cityTown";
-// // import CityNight from "./game-screen/game-map/cityNight";
-// // import Cblast from './game-screen/mini-game/color-blast'
-// // import Triangle from './game-screen/game-map/triangle'
+// import CityTown from "./game-screen/game-map/cityTown";
+// import CityNight from "./game-screen/game-map/cityNight";
+// import Cblast from './game-screen/mini-game/color-blast'
+// import Triangle from './game-screen/game-map/triangle'
 // import Alive from './game-screen/mini-game/alive'
-// // import Cblast from "./game-screen/mini-game/color-blast";
-// // import Kamar1 from './game-screen/game-map/kamar1'
-// // import Forest from './game-screen/game-map/forest';
+// import Cblast from "./game-screen/mini-game/color-blast";
+// import Kamar1 from './game-screen/game-map/kamar1'
+// import Forest from './game-screen/game-map/forest';
 // import TicTacToe  from "./game-screen/mini-game/tic-tac-toe";
+// import GedungSeni from "./game-screen/game-map/gedung-seni";
+// import Beach from "./game-screen/game-map/beach";
 
 // export default function PixelGame() {
 //     return (
-//         <TicTacToe/>
+//         <Beach/>
 //     )
 // }

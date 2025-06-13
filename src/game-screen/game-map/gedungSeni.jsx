@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
-import collision from "../../assets/map/map-collision/map-pantai";
-import beachMape from "../../assets/map/map-image/mapPantai.png";
+import collision from "../../assets/map/map-collision/seni";
+import beachMape from "../../assets/map/map-image/gedungSeniAwal.png";
 import "../../Citygame.css";
 import "../../character-sprites.css";
 import PortalConfirmation from "../game-features/portal-confirmation";
@@ -16,10 +16,6 @@ function isCollision(x, y) {
 		return true; // Out of bounds = collision
 	}
 
-	if (gridY === 4 && gridX === 15) {
-		return "gedungSeni";
-	}
-
 	const collisionValue = collision[gridY * MAP_WIDTH + gridX];
 	return collisionValue !== 0 && collisionValue !== -1; // Anything besides 0 and -1 is collision
 }
@@ -33,12 +29,17 @@ function checkPortalDestination(x, y) {
         return false;
     }
 
-    // Portal ke gedungSeni
-    if (gridY === 4 && gridX === 15) {
-        return "gedungSeni";
+    // Portal to beach
+    if (gridY === 19 && gridX === 10) {
+        return "beach";
+    }
+
+    if (gridY === 19 && gridX === 9) {
+        return "beach";
     }
 
     const collisionIndex = gridY * MAP_WIDTH + gridX;
+    // Check if it's a portal value
     return collision[collisionIndex] === -1;
 }
 
@@ -54,7 +55,7 @@ export default function Beach({
 	const mapRef = useRef(null);
 	const [gameState, setGameState] = useState({
 		x: startPosition?.x || 9.2 * 32,
-		y: startPosition?.y || 3.3 * 32,
+		y: startPosition?.y || 4.3 * 32,
 		pressedDirections: [],
 		facing: "down",
 		walking: false,
@@ -320,8 +321,7 @@ export default function Beach({
 							-gameState.cameraY * pixelSize
 						}px, 0)`,
 					}}>
-						
-				{/* Display collision areas and portals */}
+                    				{/* Display collision areas and portals */}
 				{/* {collision.map((val, idx) => {
 					if (val === 0) return null;
 					const gridCell = 64;
