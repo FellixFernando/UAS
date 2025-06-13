@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTransition } from "./TransitionContext";
+import { useAudio } from "./AudioContext";
 import pickKarakter from "./pick karakter.png";
 import playImg from "./play.png";
 import clickSound from "./button-click.mp3";
 import ceweGede from "./cewe.jpg"; // Static image for button
 import ucup2 from "./ucup.jpg"; // Static image for button
-import bgMusic from "./background-music-main-menu.mp3";
 import spritesCewe from "./spritesCewe.png"; // Spritesheet for ceweGede character
 import ucup2Sprite from "./ucup2.png"; // Spritesheet for ucup character
 import "./character-select.css";
@@ -14,9 +14,9 @@ import "./character-select.css";
 export default function CharacterSelect() {
 	const navigate = useNavigate();
 	const { triggerTransition } = useTransition();
+	const { isMusicPlaying } = useAudio();
 	const [selected, setSelected] = useState(null);
 	const [username, setUsername] = useState("");
-	const bgMusicRef = useRef(null);
 
 	// New state for animated character display
 	const [animatedCharacterSprite, setAnimatedCharacterSprite] = useState(null);
@@ -24,30 +24,6 @@ export default function CharacterSelect() {
 	const [characterDirection, setCharacterDirection] = useState("right"); // Default direction
 	const animationIntervalRef = useRef(null);
 	const [characterClass, setCharacterClass] = useState(""); // New state for character specific class
-
-	useEffect(() => {
-		// Music initialization and playback
-		const isMusicPlayingFromMain =
-			localStorage.getItem("isMusicPlaying") === "true";
-
-		bgMusicRef.current = new Audio(bgMusic);
-		bgMusicRef.current.loop = true;
-		bgMusicRef.current.volume = 0.5;
-
-		if (isMusicPlayingFromMain) {
-			bgMusicRef.current
-				.play()
-				.catch((e) => console.error("Error playing music:", e));
-		}
-
-		return () => {
-			// Pause and reset music when component unmounts
-			if (bgMusicRef.current) {
-				bgMusicRef.current.pause();
-				bgMusicRef.current.currentTime = 0;
-			}
-		};
-	}, []);
 
 	// Effect for character animation
 	useEffect(() => {

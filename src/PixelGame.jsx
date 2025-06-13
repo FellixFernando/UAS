@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
+import { AudioProvider } from "./menu/AudioContext";
 import City from "./game-screen/game-map/city";
 import Beach from "./game-screen/game-map/beach";
 import Forest from "./game-screen/game-map/forest";
@@ -152,6 +153,7 @@ export default function PixelGame() {
 	};
 
 	return (
+		<AudioProvider>
 		<TransitionProvider>
 			<div className="frame">
 				{" "}
@@ -174,6 +176,7 @@ export default function PixelGame() {
 				</Routes>
 			</div>
 		</TransitionProvider>
+		</AudioProvider>
 	);
 }
 
