@@ -7,6 +7,11 @@ import blankButtonImg from "./blank-button.png";
 import clickSound from "./button-click.mp3";
 import bgMusic from "./background-music-main-menu.mp3";
 import papanImg from "./papan.png";
+import claresImg from "./clares.jpg";
+import rorenImg from "./roren.jpg";
+import hansenImg from "./hansen.jpg";
+import fellixImg from "./fellix.jpg";
+import logoumnImg from "./logoumn.png";
 import "./main-menu.css";
 
 export default function MainMenu() {
@@ -160,23 +165,33 @@ export default function MainMenu() {
 						</div>
 						<div className="makers-modal-grid">
 							<div className="maker-item">
-								<div className="maker-pic">PICTURE 1</div>
-								<div className="maker-text">TEXT 1</div>
+								<div className="maker-pic">
+									<img src={claresImg} alt="Clares" />
+								</div>
+								<div className="maker-text">Jesslyn Claresta</div>
 							</div>
 							<div className="maker-item">
-								<div className="maker-pic">PICTURE 2</div>
-								<div className="maker-text">TEXT 2</div>
+								<div className="maker-pic">
+									<img src={rorenImg} alt="Roren" />
+								</div>
+								<div className="maker-text">Rorensia Verisca</div>
 							</div>
 							<div className="maker-item">
-								<div className="maker-pic">PICTURE 3</div>
-								<div className="maker-text">TEXT 3</div>
+								<div className="maker-pic">
+									<img src={hansenImg} alt="Hansen" />
+								</div>
+								<div className="maker-text">Hansen Japri</div>
 							</div>
 							<div className="maker-item">
-								<div className="maker-pic">PICTURE 4</div>
-								<div className="maker-text">TEXT 4</div>
+								<div className="maker-pic">
+									<img src={fellixImg} alt="Fellix" />
+								</div>
+								<div className="maker-text">Fellix Fernando</div>
 							</div>
 							<div className="maker-item center">
-								<div className="maker-pic">PICTURE 5</div>
+								<div className="maker-pic">
+									<img src={logoumnImg} alt="Logo UMN" />
+								</div>
 							</div>
 						</div>
 					</div>
