@@ -40,9 +40,9 @@ function checkPortalDestination(x, y) {
 		return "triangle";
 	}
 
-	if (gridY === 11 && gridX === 19) {
-		return "cblast";
-	}
+	// if (gridY === 11 && gridX === 19) {
+	// 	return "cblast";
+	// }
 
 	if (gridY === 14 && (gridX === 11 || gridX === 12)) {
         return 'kamar1';

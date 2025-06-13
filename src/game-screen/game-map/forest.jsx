@@ -39,6 +39,10 @@ function checkPortalDestination(x, y) {
 		return "rock-climbing";
 	}
 
+	if (gridY === 12 && gridX === 14 || gridX === 15) {
+		return "cblast";
+	}
+
 	return null;
 }
 
