@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useTransition } from "./TransitionContext";
+import { useAudio } from "./AudioContext";
 import { useEffect, useRef, useState } from "react";
 import mainMenuBg from "./mainMenu.png";
 import playImg from "./play.png";
@@ -17,11 +18,8 @@ import "./main-menu.css";
 export default function MainMenu() {
 	const navigate = useNavigate();
 	const { triggerTransition } = useTransition();
+	const { isMusicPlaying, toggleMusic } = useAudio();
 	const bgMusicRef = useRef(null);
-	const [isMusicPlaying, setIsMusicPlaying] = useState(() => {
-		const savedMusicState = localStorage.getItem("isMusicPlaying");
-		return savedMusicState ? JSON.parse(savedMusicState) : false;
-	});
 	const audioContextRef = useRef(null);
 	const [showMakers, setShowMakers] = useState(false);
 
@@ -41,7 +39,6 @@ export default function MainMenu() {
 
 			// Try to play the music
 			await bgMusicRef.current.play();
-			setIsMusicPlaying(true);
 		} catch (error) {
 			console.log("Could not autoplay music:", error);
 			// If autoplay fails, we'll keep the music button visible for manual play
@@ -58,20 +55,6 @@ export default function MainMenu() {
 		// Try to play music immediately
 		tryPlayMusic();
 
-		// Also try to play on any user interaction with the document
-		const handleUserInteraction = () => {
-			tryPlayMusic();
-			// Remove the event listeners after first successful interaction
-			document.removeEventListener("click", handleUserInteraction);
-			document.removeEventListener("keydown", handleUserInteraction);
-			document.removeEventListener("touchstart", handleUserInteraction);
-		};
-
-		// Add event listeners for user interaction
-		document.addEventListener("click", handleUserInteraction);
-		document.addEventListener("keydown", handleUserInteraction);
-		document.addEventListener("touchstart", handleUserInteraction);
-
 		// Cleanup function
 		return () => {
 			if (bgMusicRef.current) {
@@ -81,37 +64,12 @@ export default function MainMenu() {
 			if (audioContextRef.current) {
 				audioContextRef.current.close();
 			}
-			document.removeEventListener("click", handleUserInteraction);
-			document.removeEventListener("keydown", handleUserInteraction);
-			document.removeEventListener("touchstart", handleUserInteraction);
 		};
 	}, []);
-
-	const toggleMusic = async () => {
-		if (!bgMusicRef.current) return;
-
-		try {
-			if (isMusicPlaying) {
-				bgMusicRef.current.pause();
-				setIsMusicPlaying(false);
-				localStorage.setItem("isMusicPlaying", "false");
-			} else {
-				await bgMusicRef.current.play();
-				setIsMusicPlaying(true);
-				localStorage.setItem("isMusicPlaying", "true");
-			}
-		} catch (error) {
-			console.log("Error toggling music:", error);
-		}
-	};
 
 	const handleStartGame = () => {
 		const audio = new Audio(clickSound);
 		audio.play();
-		if (bgMusicRef.current) {
-			bgMusicRef.current.pause();
-			bgMusicRef.current.currentTime = 0;
-		}
 		setTimeout(() => {
 			triggerTransition("split_diagonal", 1200, () =>
 				navigate("/character-select")
