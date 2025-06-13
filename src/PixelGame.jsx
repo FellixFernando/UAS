@@ -18,7 +18,7 @@ import PlayerBar from "./game-screen/game-features/player-bar";
 // import CityTown from "./game-screen/game-map/cityTown";
 // import CityNight from "./game-screen/game-map/cityNight";
 
-import "./pixelgame.css";
+import "./pixelGame.css";
 // import Alive from './game-screen/event/alive';
 
 export default function PixelGame() {
