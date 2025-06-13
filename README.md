@@ -1,12 +1,13 @@
-# React + Vite
+Group members' names :
+1. Hansen Japri
+2. Fellix Fernando
+3. Jesslyn Claresta Sanders
+4. Rorensia Verisca
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Game Rules : 
+1. Jalan menggunakan arrow keys
+2. Player harus mendatangi semua tempat dan memainkan semua mini game (mengunjungi rumah, pantai, hutan, kota, memainkan cblast, dan memainkan alive)
+3. Player akan kalah jika salah satu status mencapai 0 ATAU ada dua status dibawah 10 ATAU sudah lebih dari hari ke-7
+4. Status akan berkurang sebanyak 1 setiap 5 deti (10 menit di waktu dalam game)
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Catatan : game-rock climbing masih memiliki bug, dianjurkan untuk tidak masuk dalam portal yang ada di goa pada hutan

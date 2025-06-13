@@ -1,7 +1,7 @@
 :root {
     --pixel-size: 4px;
     --grid-cell: calc(var(--pixel-size) * 16);
-    --bg: #bc4dff;
+    --bg: #000;
 }
 
 
@@ -13,7 +13,7 @@ body {
 }
 
 body {
-    background: var(--bg);
+    background:#000;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -25,7 +25,7 @@ body {
     height: calc(var(--pixel-size) * 180);
     /* height: 100%;
     width: 100%; */
-    outline: 5px solid #fff;
+    /* outline: 5px solid #fff; */
     position: relative;
     z-index: 1;
 }
