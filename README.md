@@ -1,12 +1,19 @@
-# React + Vite
+Group members' names :
+1. Hansen Japri
+2. Fellix Fernando
+3. Jesslyn Claresta Sanders
+4. Rorensia Verisca
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Game Rules : 
+1. Jalan bisa pakai on-screen button, WASD, atau Arrow Keys
+2. Pojok kanan atas akan ada Questlist dan Locations
+3. Pas pertama masuk, ngomong sama npc, main game tic-tac-toe buat dapetin kunci rumah
+4. Player bisa bebas ke 5 tempat tanpa urutan khusus
+5. Beberapa event memiliki interaksi khusus dengan item
+6. Player akan menang jika semua mini-game dan event telah dilaksanakan
+7. Player akan kalah jika :
+8. Salah satu status bar mencapai 0,
+9. Dua atau lebih status bar dibawah 10
+10. Waktu sudah melewati 7 hari
+11. Setiap kali player menang, tampilkan overlay score
+12. Setiap kali player kalah, tampilkan overlay score
