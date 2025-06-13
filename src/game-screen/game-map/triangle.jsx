@@ -3,6 +3,7 @@ import collision from "../../assets/map/map-collision/triangleK";
 import cityMape from "../../assets/map/map-image/triangleK.png";
 import "../../Citygame.css";
 import "../../character-sprites.css";
+import { items } from "../game-features/items";
 
 const MAP_WIDTH = 20;
 const MAP_HEIGHT = 20;
@@ -43,6 +44,10 @@ export default function Triangle({
 	startPosition,
 	character = "ucup2",
 	username = "Player",
+	onAddToInventory,
+	onPartTimeJob,
+	moneyAmount,
+	setMoneyAmount,
 }) {
 	console.log("forest");
 
@@ -111,6 +116,28 @@ export default function Triangle({
 		[keys]
 	);
 
+	const [showFoodButtons, setShowFoodButtons] = useState(false);
+	const [showJobOptions, setShowJobOptions] = useState(false);
+	const [showPrompt, setShowPrompt] = useState(false);
+	const [promptMessage, setPromptMessage] = useState("");
+
+	// Add this function to check if character is at food location
+	const checkFoodLocation = useCallback((x, y) => {
+		const gridX = Math.floor(x / 16);
+		const gridY = Math.floor(y / 16);
+		return (gridX === 15 || gridX === 14) && gridY === 12;
+	}, []);
+
+	const handleBuyItem = (item, cost) => {
+		if (moneyAmount >= cost) {
+			setMoneyAmount(moneyAmount - cost);
+			onAddToInventory && onAddToInventory(item);
+		} else {
+			setPromptMessage("Uang tidak cukup!");
+			setShowPrompt(true);
+		}
+	};
+
 	useEffect(() => {
 		let animationFrameId;
 
@@ -147,7 +174,6 @@ export default function Triangle({
 					const portalDestination = checkPortalDestination(feetX, feetY);
 					if (portalDestination) {
 						if (onChangeWorld) {
-							// Send current position and destination
 							onChangeWorld(portalDestination, nextX, nextY);
 						}
 						return {
@@ -167,6 +193,11 @@ export default function Triangle({
 
 					facing = direction;
 				}
+
+				// Check if character is at food location
+				const feetX = x + 16;
+				const feetY = y + 20;
+				setShowFoodButtons(checkFoodLocation(feetX, feetY));
 
 				// Camera logic
 				const LOOKAHEAD_DISTANCE = 6;
@@ -212,7 +243,13 @@ export default function Triangle({
 			window.removeEventListener("keyup", handleKeyUp);
 			cancelAnimationFrame(animationFrameId);
 		};
-	}, [directions, handleKeyDown, handleKeyUp, onChangeWorld]);
+	}, [
+		directions,
+		handleKeyDown,
+		handleKeyUp,
+		onChangeWorld,
+		checkFoodLocation,
+	]);
 
 	useEffect(() => {
 		if (!characterRef.current || !mapRef.current) return;
@@ -276,6 +313,30 @@ export default function Triangle({
 		}
 		return cells;
 	}
+
+	// Add food button styles
+	const foodButtonStyle = {
+		position: "absolute",
+		bottom: "20px",
+		left: "50%",
+		transform: "translateX(-50%)",
+		display: "flex",
+		gap: "10px",
+		zIndex: 1000,
+	};
+
+	const buttonStyle = {
+		padding: "10px 20px",
+		backgroundColor: "#4a4a4a",
+		color: "white",
+		border: "2px solid #666",
+		borderRadius: "4px",
+		cursor: "pointer",
+		fontFamily: '"Press Start 2P", cursive',
+		fontSize: "12px",
+		transition: "transform 0.1s",
+	};
+
 	return (
 		<div className="game-container">
 			<div className="map-container">
@@ -300,6 +361,104 @@ export default function Triangle({
 				</div>
 			</div>
 			<div className="username-display">{username}</div>
+			{showFoodButtons && (
+				<div style={foodButtonStyle}>
+					{!showJobOptions ? (
+						<>
+							<button
+								style={buttonStyle}
+								onClick={() => handleBuyItem(items.burger, 4)}>
+								Burger
+							</button>
+							<button
+								style={buttonStyle}
+								onClick={() => handleBuyItem(items.sushi, 3)}>
+								Sushi
+							</button>
+							<button
+								style={buttonStyle}
+								onClick={() => handleBuyItem(items.airPutih, 2)}>
+								Air Putih
+							</button>
+							<button
+								style={buttonStyle}
+								onClick={() => setShowJobOptions(true)}>
+								Paruh-waktu sebagai kasir
+							</button>
+						</>
+					) : (
+						<div style={{ display: "flex", gap: "10px" }}>
+							<button
+								style={buttonStyle}
+								onClick={() => {
+									onPartTimeJob && onPartTimeJob(120, 15, 5);
+									setShowJobOptions(false);
+								}}>
+								2 jam
+							</button>
+							<button
+								style={buttonStyle}
+								onClick={() => {
+									onPartTimeJob && onPartTimeJob(240, 30, 10);
+									setShowJobOptions(false);
+								}}>
+								4 jam
+							</button>
+							<button
+								style={buttonStyle}
+								onClick={() => {
+									onPartTimeJob && onPartTimeJob(360, 45, 20);
+									setShowJobOptions(false);
+								}}>
+								6 jam
+							</button>
+						</div>
+					)}
+				</div>
+			)}
+			{showPrompt && (
+				<div
+					style={{
+						position: "fixed",
+						top: 0,
+						left: 0,
+						width: "100vw",
+						height: "100vh",
+						background: "rgba(0,0,0,0.5)",
+						display: "flex",
+						alignItems: "center",
+						justifyContent: "center",
+						zIndex: 2000,
+					}}>
+					<div
+						style={{
+							background: "#222",
+							color: "white",
+							padding: "32px 48px",
+							borderRadius: "12px",
+							boxShadow: "0 4px 24px rgba(0,0,0,0.4)",
+							fontSize: "18px",
+							textAlign: "center",
+						}}>
+						{promptMessage}
+						<br />
+						<button
+							style={{
+								marginTop: "18px",
+								padding: "8px 24px",
+								fontSize: "16px",
+								borderRadius: "6px",
+								border: "none",
+								background: "#4a4a4a",
+								color: "white",
+								cursor: "pointer",
+							}}
+							onClick={() => setShowPrompt(false)}>
+							OK
+						</button>
+					</div>
+				</div>
+			)}
 		</div>
 	);
 }

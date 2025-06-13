@@ -1,0 +1,94 @@
+.inventory-container {
+	position: fixed;
+	bottom: 20px;
+	right: 20px;
+	background-color: rgba(0, 0, 0, 0.8);
+	border: 4px solid #4a4a4a;
+	border-radius: 8px;
+	padding: 10px;
+	color: white;
+	font-family: "Press Start 2P", cursive;
+	z-index: 1000;
+}
+
+.inventory-container h3 {
+	margin: 0 0 10px 0;
+	font-size: 14px;
+	text-align: center;
+	color: #fff;
+	text-shadow: 2px 2px 0 #000;
+}
+
+.inventory-grid {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 8px;
+	padding: 5px;
+}
+
+.inventory-slot {
+	width: 50px;
+	height: 50px;
+	background-color: rgba(255, 255, 255, 0.1);
+	border: 2px solid #666;
+	border-radius: 4px;
+	cursor: pointer;
+	position: relative;
+	transition: transform 0.1s;
+}
+
+.inventory-slot:hover {
+	transform: scale(1.05);
+	border-color: #fff;
+}
+
+.inventory-item {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	position: relative;
+}
+
+.inventory-item img {
+	width: 32px;
+	height: 32px;
+	object-fit: contain;
+}
+
+.item-name {
+	position: absolute;
+	bottom: -20px;
+	left: 50%;
+	transform: translateX(-50%);
+	font-size: 8px;
+	white-space: nowrap;
+	background-color: rgba(0, 0, 0, 0.8);
+	padding: 2px 4px;
+	border-radius: 2px;
+	display: none;
+}
+
+.inventory-slot:hover .item-name {
+	display: block;
+}
+
+.item-quantity {
+	position: absolute;
+	bottom: 2px;
+	right: 2px;
+	background-color: rgba(0, 0, 0, 0.8);
+	color: white;
+	font-size: 8px;
+	padding: 1px 3px;
+	border-radius: 2px;
+}
+
+.empty-slot {
+	width: 100%;
+	height: 100%;
+	background-color: rgba(255, 255, 255, 0.05);
+	border-radius: 2px;
+}

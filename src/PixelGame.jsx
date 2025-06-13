@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { AudioProvider } from "./menu/AudioContext";
 import City from "./game-screen/game-map/city";
@@ -15,6 +15,8 @@ import MainMenu from "./menu/main-menu";
 import CharacterSelect from "./menu/character-select";
 import { TransitionProvider } from "./menu/TransitionContext";
 import PlayerBar from "./game-screen/game-features/player-bar";
+import GameOverOverlay from "./game-screen/game-features/game-over-overlay";
+import Inventory from "./game-screen/game-features/inventory";
 
 // import CityTown from "./game-screen/game-map/cityTown";
 // import CityNight from "./game-screen/game-map/cityNight";
@@ -35,6 +37,145 @@ export default function PixelGame() {
 	const [happinessLevel, setHappinessLevel] = useState(70);
 	const [moneyAmount, setMoneyAmount] = useState(10);
 	const [dayCount, setDayCount] = useState(1);
+	const [gameOver, setGameOver] = useState(false);
+	const [gameOverReason, setGameOverReason] = useState(null);
+
+	// Inventory system
+	const [inventory, setInventory] = useState(Array(12).fill(null));
+	const [showInventory, setShowInventory] = useState(false);
+
+	// Add timer state
+	const [timer, setTimer] = useState(0);
+
+	const addToInventory = (item) => {
+		setInventory((prevInventory) => {
+			const newInventory = [...prevInventory];
+			const existingItemIndex = newInventory.findIndex(
+				(invItem) => invItem && invItem.id === item.id
+			);
+
+			if (existingItemIndex !== -1) {
+				// If item exists, increase quantity
+				newInventory[existingItemIndex] = {
+					...newInventory[existingItemIndex],
+					quantity: newInventory[existingItemIndex].quantity + 1,
+				};
+			} else {
+				// Find first empty slot
+				const emptySlotIndex = newInventory.findIndex((slot) => slot === null);
+				if (emptySlotIndex !== -1) {
+					newInventory[emptySlotIndex] = { ...item, quantity: 1 };
+				}
+			}
+			return newInventory;
+		});
+	};
+
+	const useItem = (item) => {
+		if (!item) return;
+
+		// Apply item effects
+		switch (item.type) {
+			case "food":
+				setFullnessLevel((prev) => Math.min(100, prev + item.effect));
+				// If burger or sushi, also increase happiness and decrease hygiene
+				if (item.id === "burger" || item.id === "sushi") {
+					setHappinessLevel((prev) => Math.min(100, prev + 10));
+					setHygieneLevel((prev) => Math.max(0, prev - 5));
+				}
+				break;
+			case "energy":
+				setEnergyLevel((prev) => Math.min(100, prev + item.effect));
+				break;
+			case "hygiene":
+				setHygieneLevel((prev) => Math.min(100, prev + item.effect));
+				break;
+			case "happiness":
+				setHappinessLevel((prev) => Math.min(100, prev + item.effect));
+				break;
+			default:
+				break;
+		}
+
+		// Remove item from inventory
+		setInventory((prevInventory) => {
+			const newInventory = [...prevInventory];
+			const itemIndex = newInventory.findIndex(
+				(invItem) => invItem && invItem.id === item.id
+			);
+
+			if (itemIndex !== -1) {
+				if (newInventory[itemIndex].quantity > 1) {
+					newInventory[itemIndex] = {
+						...newInventory[itemIndex],
+						quantity: newInventory[itemIndex].quantity - 1,
+					};
+				} else {
+					newInventory[itemIndex] = null;
+				}
+			}
+			return newInventory;
+		});
+	};
+
+	// Toggle inventory visibility with 'I' key
+	useEffect(() => {
+		const handleKeyPress = (event) => {
+			if (event.key.toLowerCase() === "i") {
+				setShowInventory((prev) => !prev);
+			}
+		};
+
+		window.addEventListener("keydown", handleKeyPress);
+		return () => window.removeEventListener("keydown", handleKeyPress);
+	}, []);
+
+	const resetGame = () => {
+		setGameOver(false);
+		setGameOverReason(null);
+		setEnergyLevel(70);
+		setFullnessLevel(70);
+		setHygieneLevel(70);
+		setHappinessLevel(70);
+		setMoneyAmount(10);
+		setDayCount(1);
+	};
+
+	// Check for game over conditions
+	useEffect(() => {
+		// Check if any status is 0
+		if (
+			energyLevel <= 0 ||
+			fullnessLevel <= 0 ||
+			hygieneLevel <= 0 ||
+			happinessLevel <= 0
+		) {
+			setGameOver(true);
+			setGameOverReason("status");
+			return;
+		}
+
+		// Check if 2 or more statuses are below 10
+		const lowStatuses = [
+			energyLevel < 10,
+			fullnessLevel < 10,
+			hygieneLevel < 10,
+			happinessLevel < 10,
+		].filter(Boolean).length;
+
+		if (lowStatuses >= 2) {
+			setGameOver(true);
+			setGameOverReason("status");
+			return;
+		}
+
+		// Check if day count exceeds 7
+		if (dayCount > 7) {
+			setGameOver(true);
+			setGameOverReason("day");
+			return;
+		}
+	}, [energyLevel, fullnessLevel, hygieneLevel, happinessLevel, dayCount]);
 
 	// Ubah handleChangeWorld agar bisa menerima posisi (opsional untuk kasus ini)
 	const handleChangeWorld = (newWorld, startPos) => {
@@ -44,6 +185,16 @@ export default function PixelGame() {
 		// }
 		console.log(`Mengubah dunia ke: ${newWorld}`); // Untuk debugging
 		setCurrentWorld(newWorld);
+	};
+
+	// Handler for part-time job
+	const handlePartTimeJob = (minutes, statDecrease, moneyIncrease) => {
+		setTimer((prev) => prev + minutes);
+		setEnergyLevel((prev) => Math.max(0, prev - statDecrease));
+		setFullnessLevel((prev) => Math.max(0, prev - statDecrease));
+		setHygieneLevel((prev) => Math.max(0, prev - statDecrease));
+		setHappinessLevel((prev) => Math.max(0, prev - statDecrease));
+		setMoneyAmount((prev) => prev + moneyIncrease);
 	};
 
 	const GameContent = () => {
@@ -103,6 +254,10 @@ export default function PixelGame() {
 						onChangeWorld={handleChangeWorld}
 						character={selectedCharacter}
 						username={username}
+						onAddToInventory={addToInventory}
+						onPartTimeJob={handlePartTimeJob}
+						moneyAmount={moneyAmount}
+						setMoneyAmount={setMoneyAmount}
 					/>
 				)}
 				{currentWorld === "kamar1" && (
@@ -148,34 +303,38 @@ export default function PixelGame() {
 						username={username}
 					/>
 				)}
+				{showInventory && <Inventory items={inventory} onUseItem={useItem} />}
 			</div>
 		);
 	};
 
 	return (
 		<AudioProvider>
-		<TransitionProvider>
-			<div className="frame">
-				{" "}
-				{location.pathname === "/game" && currentWorld !== "tictactoe" && (
-					<PlayerBar
-						energyLevel={energyLevel}
-						fullnessLevel={fullnessLevel}
-						hygieneLevel={hygieneLevel}
-						happinessLevel={happinessLevel}
-						moneyAmount={moneyAmount}
-						dayCount={dayCount}
-						playerName={username}
-						currentLocation={currentWorld}
-					/>
-				)}
-				<Routes>
-					<Route path="/" element={<MainMenu />} />
-					<Route path="/character-select" element={<CharacterSelect />} />
-					<Route path="/game" element={<GameContent />} />
-				</Routes>
-			</div>
-		</TransitionProvider>
+			<TransitionProvider>
+				<div className="frame">
+					{" "}
+					{location.pathname === "/game" && currentWorld !== "tictactoe" && (
+						<PlayerBar
+							energyLevel={energyLevel}
+							fullnessLevel={fullnessLevel}
+							hygieneLevel={hygieneLevel}
+							happinessLevel={happinessLevel}
+							moneyAmount={moneyAmount}
+							dayCount={dayCount}
+							playerName={username}
+							currentLocation={currentWorld}
+						/>
+					)}
+					<Routes>
+						<Route path="/" element={<MainMenu />} />
+						<Route path="/character-select" element={<CharacterSelect />} />
+						<Route path="/game" element={<GameContent />} />
+					</Routes>
+					{gameOver && (
+						<GameOverOverlay reason={gameOverReason} onReset={resetGame} />
+					)}
+				</div>
+			</TransitionProvider>
 		</AudioProvider>
 	);
 }
