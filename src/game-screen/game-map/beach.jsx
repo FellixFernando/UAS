@@ -16,6 +16,10 @@ function isCollision(x, y) {
 		return true; // Out of bounds = collision
 	}
 
+	if (gridY === 4 && gridX === 15) {
+		return "gedungSeni";
+	}
+
 	const collisionValue = collision[gridY * MAP_WIDTH + gridX];
 	return collisionValue !== 0 && collisionValue !== -1; // Anything besides 0 and -1 is collision
 }
@@ -29,12 +33,16 @@ function checkPortalDestination(x, y) {
 		return false;
 	}
 
-	if (gridY === 6 && gridX === 19) {
+	// Portal ke gedungSeni
+	if (gridY === 4 && gridX === 15) {
+		return "gedungSeni";
+	}
+
+	if (gridX === 19 && gridY === 6){
 		return "city";
 	}
 
 	const collisionIndex = gridY * MAP_WIDTH + gridX;
-	// Check if it's a portal value
 	return collision[collisionIndex] === -1;
 }
 
@@ -174,6 +182,11 @@ export default function Beach({
 
 					const feetX = nextX + characterWidth / 2;
 					const feetY = nextY + characterHeight;
+					const gridX = Math.floor(feetX / 16);
+					const gridY = Math.floor(feetY / 16);
+					console.log(
+						`Player at (${x}, ${y}), Feet at (${feetX}, ${feetY}), Grid: (${gridX}, ${gridY})`
+					);
 
 					// Check if on portal to city
 					const portalDestination = checkPortalDestination(feetX, feetY);
@@ -316,6 +329,32 @@ export default function Beach({
 							-gameState.cameraY * pixelSize
 						}px, 0)`,
 					}}>
+					{/* Display collision areas and portals */}
+					{/* {collision.map((val, idx) => {
+					if (val === 0) return null;
+					const gridCell = 64;
+					const x = (idx % MAP_WIDTH) * gridCell;
+					const y = Math.floor(idx / MAP_WIDTH) * gridCell;
+					return (
+						<div
+							key={idx}
+							style={{
+								position: 'absolute',
+								left: x,
+								top: y,
+								width: gridCell,
+								height: gridCell,
+								background: val === -1 ? 'rgba(0,255,0,0.5)' : 'rgba(255,0,0,0.5)',
+								border: val === -1 ? '1px solid green' : '1px solid red',
+								boxSizing: 'border-box',
+								pointerEvents: 'none',
+								zIndex: 10,
+							}}
+						/>
+					);
+				})} */}
+					{/* Grid overlay */}
+					{/* {renderGridCells()} */}
 					<div
 						ref={characterRef}
 						className="character"

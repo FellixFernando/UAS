@@ -44,6 +44,11 @@ function checkPortalDestination(x, y) {
 		return "cblast";
 	}
 
+	if (gridY === 14 && (gridX === 11 || gridX === 12)) {
+        return 'kamar1';
+    }
+
+
 	// Only check row 18 (index 17) for portals
 	if (gridY === 17 && collision[collisionIndex] === -1) {
 		if (gridX === 0) {

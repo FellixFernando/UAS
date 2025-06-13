@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
-import collision from "../../assets/map/map-collision/map-kamar";
-import cityMape from "../../assets/map/map-image/kamar1.png";
+import collision from "../../assets/map/map-collision/seni";
+import beachMape from "../../assets/map/map-image/gedungSeniAwal.png";
 import "../../Citygame.css";
 import "../../character-sprites.css";
+import PortalConfirmation from "../game-features/portal-confirmation";
 
 const MAP_WIDTH = 20;
 const MAP_HEIGHT = 20;
@@ -25,65 +26,64 @@ function checkPortalDestination(x, y) {
 	const gridY = Math.floor(y / 16);
 
 	if (gridX < 0 || gridX >= MAP_WIDTH || gridY < 0 || gridY >= MAP_HEIGHT) {
-		return null;
+		return false;
 	}
 
-	if (gridY === 19 && (gridX === 9 || gridX === 10)) {
-		return "city";
-	}
+	// Portal to beach
+	if(gridX === 19 &&  (gridY === 8 || gridY === 10))
+		return "beach";
 
-	return null;
+	const collisionIndex = gridY * MAP_WIDTH + gridX;
+	// Check if it's a portal value
+	return collision[collisionIndex] === -1;
 }
 
-// Function to check if position is at mandi spot
-function checkMandiPosition(x, y) {
+// Function to check if position is at karedok spot
+function checkKaredokPosition(x, y) {
 	const gridX = Math.floor(x / 16);
 	const gridY = Math.floor(y / 16);
-	return gridY === 18 && (gridX === 13 || gridX === 14);
+	return gridY === 18 && (gridX === 16 || gridX === 17 || gridX === 18);
 }
 
-// Function to check if position is at food spot
-function checkFoodPosition(x, y) {
+// Function to check if position is at decoration shop
+function checkDecorationShopPosition(x, y) {
 	const gridX = Math.floor(x / 16);
 	const gridY = Math.floor(y / 16);
-
-	return gridY === 9 && gridX >= 1 && gridX <= 7;
+	return gridY === 15 && gridX >= 2 && gridX <= 6;
 }
 
-// Function to check if position is at sleep spot
-function checkSleepPosition(x, y) {
-	const gridX = Math.floor(x / 16);
-	const gridY = Math.floor(y / 16);
-
-	return gridY === 8 && gridX === 15;
-}
-
-export default function Kamar1({
+export default function Beach({
 	onChangeWorld,
 	startPosition,
 	character = "ucup2",
 	username = "Player",
-	onHygieneIncrease,
 	onFullnessIncrease,
-	onHappinessIncrease,
 	onEnergyIncrease,
-	onTimeIncrease,
-	onFullnessDecrease,
-	onHygieneDecrease,
+	onHappinessIncrease,
 }) {
-	console.log("forest");
+	console.log("gedungSeni");
 
 	const characterRef = useRef(null);
 	const mapRef = useRef(null);
 	const [gameState, setGameState] = useState({
-		x: startPosition?.x || 4 * 32,
-		y: startPosition?.y || 8 * 32,
+		x: startPosition?.x || 9.2 * 32,
+		y: startPosition?.y || 4.3 * 32,
 		pressedDirections: [],
 		facing: "down",
 		walking: false,
-		cameraX: startPosition?.x || 6 * 32,
-		cameraY: startPosition?.y || 8 * 32,
+		cameraX: startPosition?.x || 9.2 * 32,
+		cameraY: startPosition?.y || 3.3 * 32,
 	});
+
+	const [portalState, setPortalState] = useState({
+		showConfirmation: false,
+		targetMap: null,
+		nextX: null,
+		nextY: null,
+	});
+
+	const [showKaredokButton, setShowKaredokButton] = useState(false);
+	const [showDecorationButton, setShowDecorationButton] = useState(false);
 
 	const directions = useMemo(
 		() => ({
@@ -106,10 +106,6 @@ export default function Kamar1({
 	);
 
 	const speed = 1; // Speed of character movement
-
-	const [showMandiButton, setShowMandiButton] = useState(false);
-	const [showFoodButtons, setShowFoodButtons] = useState(false);
-	const [showSleepButton, setShowSleepButton] = useState(false);
 
 	const handleKeyDown = useCallback(
 		(e) => {
@@ -142,6 +138,31 @@ export default function Kamar1({
 		[keys]
 	);
 
+	const handlePortalConfirm = useCallback(() => {
+		if (portalState.targetMap && onChangeWorld) {
+			onChangeWorld(
+				portalState.targetMap,
+				portalState.nextX,
+				portalState.nextY
+			);
+		}
+		setPortalState({
+			showConfirmation: false,
+			targetMap: null,
+			nextX: null,
+			nextY: null,
+		});
+	}, [portalState, onChangeWorld]);
+
+	const handlePortalCancel = useCallback(() => {
+		setPortalState({
+			showConfirmation: false,
+			targetMap: null,
+			nextX: null,
+			nextY: null,
+		});
+	}, []);
+
 	useEffect(() => {
 		let animationFrameId;
 
@@ -153,18 +174,6 @@ export default function Kamar1({
 			setGameState((prev) => {
 				let { x, y, cameraX, cameraY, pressedDirections, facing, walking } =
 					prev;
-
-				// Check if character is at mandi position
-				const feetX = x + 16;
-				const feetY = y + 20;
-				const gridX = Math.floor(feetX / 16);
-				const gridY = Math.floor(feetY / 16);
-				console.log(
-					`Player at (${x}, ${y}), Feet at (${feetX}, ${feetY}), Grid: (${gridX}, ${gridY})`
-				);
-				setShowMandiButton(checkMandiPosition(feetX, feetY));
-				setShowFoodButtons(checkFoodPosition(feetX, feetY));
-				setShowSleepButton(checkSleepPosition(feetX, feetY));
 
 				const direction = pressedDirections[0];
 				walking = false;
@@ -185,21 +194,27 @@ export default function Kamar1({
 
 					const feetX = nextX + characterWidth / 2;
 					const feetY = nextY + characterHeight;
+					const gridX = Math.floor(feetX / 16);
+					const gridY = Math.floor(feetY / 16);
+					console.log(
+						`Player at (${x}, ${y}), Feet at (${feetX}, ${feetY}), Grid: (${gridX}, ${gridY})`
+					);
+
+					// Check if character is at karedok position
+					setShowKaredokButton(checkKaredokPosition(feetX, feetY));
+					// Check if character is at decoration shop position
+					setShowDecorationButton(checkDecorationShopPosition(feetX, feetY));
 
 					// Check if on portal to city
 					const portalDestination = checkPortalDestination(feetX, feetY);
 					if (portalDestination) {
-						if (onChangeWorld) {
-							// Send current position and destination
-							onChangeWorld(portalDestination, nextX, nextY);
-						}
-						return {
-							...prev,
-							x: nextX,
-							y: nextY,
-							walking: true,
-							facing: direction,
-						};
+						setPortalState({
+							showConfirmation: true,
+							targetMap: portalDestination,
+							nextX,
+							nextY,
+						});
+						return prev;
 					}
 
 					if (!isCollision(feetX, feetY)) {
@@ -255,7 +270,7 @@ export default function Kamar1({
 			window.removeEventListener("keyup", handleKeyUp);
 			cancelAnimationFrame(animationFrameId);
 		};
-	}, [directions, handleKeyDown, handleKeyUp, onChangeWorld]);
+	}, [directions, handleKeyDown, handleKeyUp]);
 
 	useEffect(() => {
 		if (!characterRef.current || !mapRef.current) return;
@@ -326,179 +341,54 @@ export default function Kamar1({
 					ref={mapRef}
 					className="map"
 					style={{
-						backgroundImage: `url(${cityMape})`,
+						backgroundImage: `url(${beachMape})`,
 						transform: `translate3d(${-gameState.cameraX * pixelSize}px, ${
 							-gameState.cameraY * pixelSize
 						}px, 0)`,
 					}}>
 					{/* Display collision areas and portals */}
-					{/*collision.map((val, idx) => {
-						if (val === 0) return null;
-						const gridCell = 64;
-						const x = (idx % MAP_WIDTH) * gridCell;
-						const y = Math.floor(idx / MAP_WIDTH) * gridCell;
-						return (
-							<div
-								key={idx}
-								style={{
-									position: 'absolute',
-									left: x,
-									top: y,
-									width: gridCell,
-									height: gridCell,
-									background: val === -1 ? 'rgba(0,255,0,0.5)' : 'rgba(255,0,0,0.5)',
-									border: val === -1 ? '1px solid green' : '1px solid red',
-									boxSizing: 'border-box',
-									pointerEvents: 'none',
-									zIndex: 10,
-								}}
-							/>
-						);
-					})} 
-					{ Grid overlay */}
-					{/*renderGridCells()*/}
+					{/* {collision.map((val, idx) => {
+					if (val === 0) return null;
+					const gridCell = 64;
+					const x = (idx % MAP_WIDTH) * gridCell;
+					const y = Math.floor(idx / MAP_WIDTH) * gridCell;
+					return (
+						<div
+							key={idx}
+							style={{
+								position: 'absolute',
+								left: x,
+								top: y,
+								width: gridCell,
+								height: gridCell,
+								background: val === -1 ? 'rgba(0,255,0,0.5)' : 'rgba(255,0,0,0.5)',
+								border: val === -1 ? '1px solid green' : '1px solid red',
+								boxSizing: 'border-box',
+								pointerEvents: 'none',
+								zIndex: 10,
+							}}
+						/>
+					);
+				})} */}
+					{/* Grid overlay */}
+					{/* {renderGridCells()} */}
 					<div
 						ref={characterRef}
 						className="character"
 						data-character={character}
 						facing={gameState.facing}
 						walking={gameState.walking ? "true" : "false"}>
-						<div className="shadow pixel-art"></div>
-						<div className="character_spritesheet"></div>
+						<div className="character_spritesheet" />
 					</div>
 				</div>
 			</div>
 			<div className="username-display">{username}</div>
-			{showMandiButton && (
-				<button
-					onClick={() => onHygieneIncrease && onHygieneIncrease(25)}
-					style={{
-						position: "fixed",
-						top: "50%",
-						left: "50%",
-						transform: "translate(-50%, -50%)",
-						padding: "15px 30px",
-						backgroundColor: "#f3e5c2",
-						color: "#b48a6d",
-						border: "4px solid #e7cfa0",
-						borderRadius: "8px",
-						boxShadow: "0 4px 0 #b48a6d",
-						cursor: "pointer",
-						zIndex: 1000,
-						fontSize: "1.2rem",
-						fontFamily: '"Press Start 2P", monospace',
-						textShadow: "2px 2px 0 #b48a6d",
-						transition: "transform 0.2s ease",
-					}}
-					onMouseOver={(e) => {
-						e.target.style.transform = "translate(-50%, -50%) scale(1.05)";
-					}}
-					onMouseOut={(e) => {
-						e.target.style.transform = "translate(-50%, -50%) scale(1)";
-					}}>
-					Mandi
-				</button>
-			)}
-			{showFoodButtons && (
-				<div
-					style={{
-						position: "fixed",
-						top: "50%",
-						left: "50%",
-						transform: "translate(-50%, -50%)",
-						display: "flex",
-						flexDirection: "column",
-						gap: "1rem",
-						zIndex: 1000,
-					}}>
-					<button
-						onClick={() => {
-							onFullnessIncrease && onFullnessIncrease(20);
-							onHappinessIncrease && onHappinessIncrease(10);
-							onEnergyIncrease && onEnergyIncrease(20);
-						}}
-						style={{
-							padding: "15px 30px",
-							backgroundColor: "#f3e5c2",
-							color: "#b48a6d",
-							border: "4px solid #e7cfa0",
-							borderRadius: "8px",
-							boxShadow: "0 4px 0 #b48a6d",
-							cursor: "pointer",
-							fontSize: "1.2rem",
-							fontFamily: '"Press Start 2P", monospace',
-							textShadow: "2px 2px 0 #b48a6d",
-							transition: "transform 0.2s ease",
-						}}
-						onMouseOver={(e) => {
-							e.target.style.transform = "scale(1.05)";
-						}}
-						onMouseOut={(e) => {
-							e.target.style.transform = "scale(1)";
-						}}>
-						Babi Guling
-					</button>
-					<button
-						onClick={() => {
-							onFullnessIncrease && onFullnessIncrease(20);
-							onHappinessIncrease && onHappinessIncrease(15);
-							onEnergyIncrease && onEnergyIncrease(10);
-						}}
-						style={{
-							padding: "15px 30px",
-							backgroundColor: "#f3e5c2",
-							color: "#b48a6d",
-							border: "4px solid #e7cfa0",
-							borderRadius: "8px",
-							boxShadow: "0 4px 0 #b48a6d",
-							cursor: "pointer",
-							fontSize: "1.2rem",
-							fontFamily: '"Press Start 2P", monospace',
-							textShadow: "2px 2px 0 #b48a6d",
-							transition: "transform 0.2s ease",
-						}}
-						onMouseOver={(e) => {
-							e.target.style.transform = "scale(1.05)";
-						}}
-						onMouseOut={(e) => {
-							e.target.style.transform = "scale(1)";
-						}}>
-						Ayam Betutu
-					</button>
-					<button
-						onClick={() => {
-							onEnergyIncrease && onEnergyIncrease(25);
-						}}
-						style={{
-							padding: "15px 30px",
-							backgroundColor: "#f3e5c2",
-							color: "#b48a6d",
-							border: "4px solid #e7cfa0",
-							borderRadius: "8px",
-							boxShadow: "0 4px 0 #b48a6d",
-							cursor: "pointer",
-							fontSize: "1.2rem",
-							fontFamily: '"Press Start 2P", monospace',
-							textShadow: "2px 2px 0 #b48a6d",
-							transition: "transform 0.2s ease",
-						}}
-						onMouseOver={(e) => {
-							e.target.style.transform = "scale(1.05)";
-						}}
-						onMouseOut={(e) => {
-							e.target.style.transform = "scale(1)";
-						}}>
-						Es Kuwut
-					</button>
-				</div>
-			)}
-			{showSleepButton && (
+			{showKaredokButton && (
 				<button
 					onClick={() => {
-						onTimeIncrease && onTimeIncrease(480);
-						onEnergyIncrease && onEnergyIncrease(35);
-						onFullnessDecrease && onFullnessDecrease(15);
-						onHygieneDecrease && onHygieneDecrease(10);
+						onFullnessIncrease && onFullnessIncrease(15);
+						onEnergyIncrease && onEnergyIncrease(10);
+						onHappinessIncrease && onHappinessIncrease(5);
 					}}
 					style={{
 						position: "fixed",
@@ -524,8 +414,44 @@ export default function Kamar1({
 					onMouseOut={(e) => {
 						e.target.style.transform = "translate(-50%, -50%) scale(1)";
 					}}>
-					Tidur
+					Beli dan Makan Karedok
 				</button>
+			)}
+			{showDecorationButton && (
+				<button
+					style={{
+						position: "fixed",
+						top: "50%",
+						left: "50%",
+						transform: "translate(-50%, -50%)",
+						padding: "15px 30px",
+						backgroundColor: "#f3e5c2",
+						color: "#b48a6d",
+						border: "4px solid #e7cfa0",
+						borderRadius: "8px",
+						boxShadow: "0 4px 0 #b48a6d",
+						cursor: "pointer",
+						zIndex: 1000,
+						fontSize: "1.2rem",
+						fontFamily: '"Press Start 2P", monospace',
+						textShadow: "2px 2px 0 #b48a6d",
+						transition: "transform 0.2s ease",
+					}}
+					onMouseOver={(e) => {
+						e.target.style.transform = "translate(-50%, -50%) scale(1.05)";
+					}}
+					onMouseOut={(e) => {
+						e.target.style.transform = "translate(-50%, -50%) scale(1)";
+					}}>
+					Beli Dekorasi?
+				</button>
+			)}
+			{portalState.showConfirmation && (
+				<PortalConfirmation
+					targetMap={portalState.targetMap}
+					onConfirm={handlePortalConfirm}
+					onCancel={handlePortalCancel}
+				/>
 			)}
 		</div>
 	);

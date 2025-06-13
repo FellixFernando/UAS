@@ -27,6 +27,11 @@ export default function PlayerBar({
 	const [gameTime, setGameTime] = useState({ hours: 6, minutes: 0 });
 
 	useEffect(() => {
+		// Reset time to 06:00 whenever dayCount changes
+		setGameTime({ hours: 6, minutes: 0 });
+	}, [dayCount]);
+
+	useEffect(() => {
 		const timer = setInterval(() => {
 			setGameTime((prevTime) => {
 				let newMinutes = prevTime.minutes + 2;
@@ -332,6 +337,35 @@ export default function PlayerBar({
 						textShadow: "2px 2px 2px #0008",
 					}}>
 					${moneyAmount}
+				</span>
+			</div>
+
+			{/* Day Count Display */}
+			<div
+				style={{
+					position: "absolute",
+					top: 60,
+					right: 230,
+					width: 120,
+					height: 36,
+					zIndex: 2,
+					display: "flex",
+					alignItems: "center",
+					justifyContent: "flex-end",
+				}}>
+				<img
+					src={day}
+					alt="Day icon"
+					style={{ width: 28, height: 28, marginRight: 8 }}
+				/>
+				<span
+					style={{
+						color: "#fff",
+						fontWeight: "bold",
+						fontSize: 18,
+						textShadow: "2px 2px 2px #0008",
+					}}>
+					Day {dayCount}
 				</span>
 			</div>
 		</div>
