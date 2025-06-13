@@ -25,7 +25,7 @@ body {
     height: calc(var(--pixel-size) * 180);
     /* height: 100%;
     width: 100%; */
-    outline: 5px solid #fff;
+    /* outline: 5px solid #fff; */
     position: relative;
     z-index: 1;
 }
