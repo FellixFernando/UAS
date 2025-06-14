@@ -85,7 +85,7 @@ export default function Alive({
 	const [playerWalking, setPlayerWalking] = useState(false);
 
 	// Timer state
-	const [timeLeft, setTimeLeft] = useState(60);
+	const [timeLeft, setTimeLeft] = useState(10);
 	const [isWin, setIsWin] = useState(false);
 
 	// *** PERUBAHAN 1: Buat ref untuk menyimpan posisi pemain ***
@@ -441,7 +441,7 @@ export default function Alive({
 		initializeNpcs();
 		setIsGameOver(false);
 		setIsWin(false);
-		setTimeLeft(60);
+		setTimeLeft(10);
 		setGameMessage("");
 		setPressedKeys(new Set());
 	};
@@ -487,7 +487,7 @@ export default function Alive({
 	useEffect(() => {
 		if (isWin) {
 			const timer = setTimeout(() => {
-				if (onChangeWorld) onChangeWorld("city");
+				if (onChangeWorld) onChangeWorld("ngaben");
 			}, 1000);
 			return () => clearTimeout(timer);
 		}
@@ -565,18 +565,18 @@ export default function Alive({
 				{isWin && (
 					<div className="absolute inset-0 bg-black bg-opacity-70 flex flex-col items-center justify-center text-white text-3xl font-bold z-10">
 						<p>{gameMessage}</p>
-						<div className="flex gap-4 mt-4">
+						{/* <div className="flex gap-4 mt-4">
 							<button
 								onClick={() => (window.location.href = "../game-map/city")}
 								className="px-6 py-2 bg-blue-500 hover:bg-blue-600 rounded-lg text-xl font-semibold shadow-md transition-colors">
-								Balik rumah
+								Ngaben
 							</button>
 							<button
 								onClick={resetGame}
 								className="px-6 py-2 bg-green-500 hover:bg-green-600 rounded-lg text-xl font-semibold shadow-md transition-colors">
 								Main Lagi
 							</button>
-						</div>
+						</div> */}
 					</div>
 				)}
 			</div>

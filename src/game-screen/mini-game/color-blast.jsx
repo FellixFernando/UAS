@@ -68,7 +68,7 @@ export default function Cblast({
 	username = "Player",
 }) {
 	const [showGameOverAlert, setShowGameOverAlert] = useState(false);
-	const [timeLeft, setTimeLeft] = useState(60); // 60 detik = 1 menit
+	const [timeLeft, setTimeLeft] = useState(7); // 60 detik = 1 menit
 	const [isGameOver, setIsGameOver] = useState(false);
 	const [bullets, setBullets] = useState([]);
 	const [enemies, setEnemies] = useState([]); // State for enemies
@@ -104,12 +104,12 @@ export default function Cblast({
 
 	const speed = 1;
 	const BULLET_SPEED = 2;
-	const MAX_ENEMIES = 40; // Max number of enemies on screen
+	const MAX_ENEMIES = 0; // Max number of enemies on screen
 	const EXPLOSION_DURATION = 1500; // Duration of explosion animation in milliseconds
 
 	// Function to reset game to initial state
 	const resetGame = useCallback(() => {
-		setTimeLeft(60);
+		setTimeLeft(7);
 		setIsGameOver(false);
 		setShowGameOverAlert(false);
 		setBullets([]);
